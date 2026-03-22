@@ -50,7 +50,7 @@ const PricingSection = () => {
             Simple <span className="text-gradient">Pricing</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            No commissions, no hidden fees. Just a flat monthly subscription.
+            Start with a 7-day free trial. No commissions, no hidden fees.
           </p>
         </motion.div>
 
