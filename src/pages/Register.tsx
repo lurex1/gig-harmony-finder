@@ -49,7 +49,7 @@ const Register = () => {
               >
                 <Guitar className="w-10 h-10 text-primary mx-auto mb-3" />
                 <span className="font-display text-lg font-semibold text-foreground block">Musician</span>
-                <span className="text-xs text-muted-foreground mt-1 block">$1.99/month</span>
+                <span className="text-xs text-muted-foreground mt-1 block">7 days free, then $1.99/mo</span>
               </motion.button>
 
               <motion.button
@@ -60,7 +60,7 @@ const Register = () => {
               >
                 <Building2 className="w-10 h-10 text-secondary mx-auto mb-3" />
                 <span className="font-display text-lg font-semibold text-foreground block">Venue</span>
-                <span className="text-xs text-muted-foreground mt-1 block">$3.99/month</span>
+                <span className="text-xs text-muted-foreground mt-1 block">7 days free, then $3.99/mo</span>
               </motion.button>
             </div>
           ) : (
@@ -127,8 +127,11 @@ const Register = () => {
               </div>
 
               <Button variant="hero" className="w-full" size="lg" type="submit" disabled={!gdprConsent}>
-                Create Account
+                Start Free Trial
               </Button>
+              <p className="text-xs text-muted-foreground text-center mt-2">
+                7-day free trial, then {role === "musician" ? "$1.99" : "$3.99"}/month. Cancel anytime.
+              </p>
             </motion.form>
           )}
 

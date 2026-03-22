@@ -50,7 +50,7 @@ const PricingSection = () => {
             Simple <span className="text-gradient">Pricing</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            No commissions, no hidden fees. Just a flat monthly subscription.
+            Start with a 7-day free trial. No commissions, no hidden fees.
           </p>
         </motion.div>
 
@@ -71,10 +71,11 @@ const PricingSection = () => {
                 <h3 className="font-display text-2xl font-bold text-foreground">{plan.name}</h3>
               </div>
 
-              <div className="mb-4">
+              <div className="mb-1">
                 <span className="font-display text-4xl font-bold text-foreground">{plan.price}</span>
                 <span className="text-muted-foreground text-sm">/month</span>
               </div>
+              <p className="text-xs text-primary font-medium mb-4">7 days free, then billed monthly</p>
 
               <p className="text-muted-foreground text-sm mb-6">{plan.description}</p>
 
@@ -88,7 +89,7 @@ const PricingSection = () => {
               </ul>
 
               <Button variant={plan.variant} className="w-full" size="lg" asChild>
-                <Link to="/register">Get Started</Link>
+                <Link to="/register">Start Free Trial</Link>
               </Button>
             </motion.div>
           ))}
