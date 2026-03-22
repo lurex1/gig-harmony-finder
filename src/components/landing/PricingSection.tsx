@@ -71,10 +71,11 @@ const PricingSection = () => {
                 <h3 className="font-display text-2xl font-bold text-foreground">{plan.name}</h3>
               </div>
 
-              <div className="mb-4">
+              <div className="mb-1">
                 <span className="font-display text-4xl font-bold text-foreground">{plan.price}</span>
                 <span className="text-muted-foreground text-sm">/month</span>
               </div>
+              <p className="text-xs text-primary font-medium mb-4">7 days free, then billed monthly</p>
 
               <p className="text-muted-foreground text-sm mb-6">{plan.description}</p>
 
