@@ -89,7 +89,7 @@ const PricingSection = () => {
               </ul>
 
               <Button variant={plan.variant} className="w-full" size="lg" asChild>
-                <Link to="/register">Get Started</Link>
+                <Link to="/register">Start Free Trial</Link>
               </Button>
             </motion.div>
           ))}

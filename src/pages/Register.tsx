@@ -127,8 +127,11 @@ const Register = () => {
               </div>
 
               <Button variant="hero" className="w-full" size="lg" type="submit" disabled={!gdprConsent}>
-                Create Account
+                Start Free Trial
               </Button>
+              <p className="text-xs text-muted-foreground text-center mt-2">
+                7-day free trial, then {role === "musician" ? "$1.99" : "$3.99"}/month. Cancel anytime.
+              </p>
             </motion.form>
           )}
 
