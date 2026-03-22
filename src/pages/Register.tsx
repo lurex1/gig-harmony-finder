@@ -60,7 +60,7 @@ const Register = () => {
               >
                 <Building2 className="w-10 h-10 text-secondary mx-auto mb-3" />
                 <span className="font-display text-lg font-semibold text-foreground block">Venue</span>
-                <span className="text-xs text-muted-foreground mt-1 block">$3.99/month</span>
+                <span className="text-xs text-muted-foreground mt-1 block">7 days free, then $3.99/mo</span>
               </motion.button>
             </div>
           ) : (
