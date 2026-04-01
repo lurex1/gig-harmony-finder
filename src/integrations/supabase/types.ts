@@ -14,7 +14,123 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      gigs: {
+        Row: {
+          budget: number | null
+          created_at: string
+          date: string
+          genre: string | null
+          id: string
+          status: Database["public"]["Enums"]["gig_status"]
+          title: string
+          venue_id: string
+        }
+        Insert: {
+          budget?: number | null
+          created_at?: string
+          date: string
+          genre?: string | null
+          id?: string
+          status?: Database["public"]["Enums"]["gig_status"]
+          title: string
+          venue_id: string
+        }
+        Update: {
+          budget?: number | null
+          created_at?: string
+          date?: string
+          genre?: string | null
+          id?: string
+          status?: Database["public"]["Enums"]["gig_status"]
+          title?: string
+          venue_id?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          receiver_id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          receiver_id: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          receiver_id?: string
+          sender_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          bio: string | null
+          created_at: string
+          id: string
+          name: string
+          role: Database["public"]["Enums"]["user_role"]
+          user_id: string
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          role: Database["public"]["Enums"]["user_role"]
+          user_id: string
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          created_at: string
+          id: string
+          plan: Database["public"]["Enums"]["subscription_plan"]
+          status: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          trial_ends_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          plan: Database["public"]["Enums"]["subscription_plan"]
+          status?: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          trial_ends_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          plan?: Database["public"]["Enums"]["subscription_plan"]
+          status?: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          trial_ends_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +139,10 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      gig_status: "open" | "filled" | "cancelled" | "completed"
+      subscription_plan: "musician" | "venue"
+      subscription_status: "trial" | "active" | "cancelled"
+      user_role: "musician" | "venue"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +269,11 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      gig_status: ["open", "filled", "cancelled", "completed"],
+      subscription_plan: ["musician", "venue"],
+      subscription_status: ["trial", "active", "cancelled"],
+      user_role: ["musician", "venue"],
+    },
   },
 } as const
