@@ -1,7 +1,10 @@
 import { Music } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Footer = () => {
+  const { t } = useTranslation();
+
   return (
     <footer className="py-10 border-t border-border">
       <div className="container mx-auto px-4">
@@ -11,12 +14,12 @@ const Footer = () => {
             <span className="font-display text-lg font-bold text-foreground">GigMatch</span>
           </Link>
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <Link to="/privacy-policy" className="hover:text-foreground transition-colors">Polityka prywatności</Link>
-            <Link to="/terms" className="hover:text-foreground transition-colors">Regulamin</Link>
-            <Link to="/cookies" className="hover:text-foreground transition-colors">Cookies</Link>
+            <Link to="/privacy-policy" className="hover:text-foreground transition-colors">{t('footer.privacyPolicy')}</Link>
+            <Link to="/terms" className="hover:text-foreground transition-colors">{t('footer.terms')}</Link>
+            <Link to="/cookies" className="hover:text-foreground transition-colors">{t('footer.cookies')}</Link>
           </div>
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} GigMatch. Wszelkie prawa zastrzeżone.
+            {t('footer.allRights', { year: new Date().getFullYear() })}
           </p>
         </div>
       </div>

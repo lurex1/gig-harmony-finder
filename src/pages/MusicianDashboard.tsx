@@ -4,6 +4,7 @@ import { Switch } from "@/components/ui/switch";
 import { Music, MapPin, MessageSquare, Calendar, User, LogOut, Bell } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const mockOffers = [
   { id: 1, venue: "The Blue Note Jazz Club", date: "25 mar 2026", time: "20:00", budget: "$200", genre: "Jazz", score: 95 },
@@ -13,6 +14,7 @@ const mockOffers = [
 
 const MusicianDashboard = () => {
   const [isAvailable, setIsAvailable] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-background">
@@ -32,7 +34,6 @@ const MusicianDashboard = () => {
 
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar */}
           <div className="lg:w-64 shrink-0 space-y-4">
             <div className="p-5 rounded-xl border border-border">
               <div className="w-14 h-14 rounded-full bg-secondary flex items-center justify-center mb-3">
@@ -44,14 +45,14 @@ const MusicianDashboard = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-foreground" />
-                    <span className="text-sm text-foreground">Dostępny teraz</span>
+                    <span className="text-sm text-foreground">{t('musicianDash.availableNow')}</span>
                   </div>
                   <Switch checked={isAvailable} onCheckedChange={setIsAvailable} />
                 </div>
                 {isAvailable && (
                   <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs text-green mt-2 flex items-center gap-1">
                     <span className="w-2 h-2 rounded-full bg-green animate-pulse" />
-                    Lokalizacja aktywna
+                    {t('musicianDash.locationActive')}
                   </motion.p>
                 )}
               </div>
@@ -59,29 +60,28 @@ const MusicianDashboard = () => {
 
             <div className="space-y-1">
               {[
-                { icon: MapPin, label: "Oferty gigów", active: true },
-                { icon: MessageSquare, label: "Wiadomości", active: false },
-                { icon: Calendar, label: "Kalendarz", active: false },
-                { icon: User, label: "Profil", active: false },
+                { icon: MapPin, labelKey: "musicianDash.gigOffers", active: true },
+                { icon: MessageSquare, labelKey: "musicianDash.messages", active: false },
+                { icon: Calendar, labelKey: "musicianDash.calendar", active: false },
+                { icon: User, labelKey: "musicianDash.profile", active: false },
               ].map((item) => (
                 <button
-                  key={item.label}
+                  key={item.labelKey}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
                     item.active ? "bg-secondary text-foreground font-medium" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                   }`}
                 >
                   <item.icon className="w-4 h-4" />
-                  {item.label}
+                  {t(item.labelKey)}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Main */}
           <div className="flex-1">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-              <h1 className="font-display text-2xl font-bold text-foreground mb-1">Oferty gigów</h1>
-              <p className="text-muted-foreground text-sm mb-6">Dopasowane gigy w Twojej okolicy</p>
+              <h1 className="font-display text-2xl font-bold text-foreground mb-1">{t('musicianDash.gigOffers')}</h1>
+              <p className="text-muted-foreground text-sm mb-6">{t('musicianDash.matchedGigs')}</p>
 
               <div className="space-y-3">
                 {mockOffers.map((offer, i) => (
@@ -96,7 +96,7 @@ const MusicianDashboard = () => {
                       <div className="flex items-center gap-3 mb-1">
                         <h3 className="font-display text-base font-semibold text-foreground">{offer.venue}</h3>
                         <span className="px-2 py-0.5 rounded-full bg-secondary text-xs font-medium text-foreground">
-                          {offer.score}% match
+                          {offer.score}% {t('musicianDash.match')}
                         </span>
                       </div>
                       <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
@@ -110,8 +110,8 @@ const MusicianDashboard = () => {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="pill" size="sm">Akceptuj</Button>
-                      <Button variant="ghost" size="sm">Odrzuć</Button>
+                      <Button variant="pill" size="sm">{t('musicianDash.accept')}</Button>
+                      <Button variant="ghost" size="sm">{t('musicianDash.reject')}</Button>
                     </div>
                   </motion.div>
                 ))}
