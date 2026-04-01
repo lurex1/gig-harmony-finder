@@ -5,10 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Music } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { t } = useTranslation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,26 +29,26 @@ const Login = () => {
         </Link>
 
         <div className="p-8 rounded-2xl border border-border bg-background">
-          <h1 className="font-display text-2xl font-bold text-foreground mb-2">Witaj ponownie</h1>
-          <p className="text-muted-foreground text-sm mb-6">Zaloguj się do swojego konta</p>
+          <h1 className="font-display text-2xl font-bold text-foreground mb-2">{t('login.welcome')}</h1>
+          <p className="text-muted-foreground text-sm mb-6">{t('login.subtitle')}</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('login.email')}</Label>
               <Input id="email" type="email" placeholder="ty@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Hasło</Label>
+              <Label htmlFor="password">{t('login.password')}</Label>
               <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
             <Button variant="pill" className="w-full" size="lg" type="submit">
-              Zaloguj się
+              {t('login.submit')}
             </Button>
           </form>
 
           <p className="text-sm text-muted-foreground text-center mt-6">
-            Nie masz konta?{" "}
-            <Link to="/register" className="text-foreground font-medium hover:underline">Zarejestruj się</Link>
+            {t('login.noAccount')}{" "}
+            <Link to="/register" className="text-foreground font-medium hover:underline">{t('login.register')}</Link>
           </p>
         </div>
       </motion.div>
