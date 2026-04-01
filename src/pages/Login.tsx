@@ -12,7 +12,6 @@ const Login = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement with Supabase auth
   };
 
   return (
@@ -23,45 +22,31 @@ const Login = () => {
         className="w-full max-w-md"
       >
         <Link to="/" className="flex items-center justify-center gap-2 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center">
-            <Music className="w-6 h-6 text-primary-foreground" />
-          </div>
+          <Music className="w-7 h-7 text-foreground" />
           <span className="font-display text-2xl font-bold text-foreground">GigMatch</span>
         </Link>
 
-        <div className="p-8 rounded-2xl bg-gradient-card border border-border/50">
-          <h1 className="font-display text-2xl font-bold text-foreground mb-2">Welcome back</h1>
-          <p className="text-muted-foreground text-sm mb-6">Sign in to your account</p>
+        <div className="p-8 rounded-2xl border border-border bg-background">
+          <h1 className="font-display text-2xl font-bold text-foreground mb-2">Witaj ponownie</h1>
+          <p className="text-muted-foreground text-sm mb-6">Zaloguj się do swojego konta</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <Input id="email" type="email" placeholder="ty@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <Label htmlFor="password">Hasło</Label>
+              <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
-            <Button variant="hero" className="w-full" size="lg" type="submit">
-              Sign In
+            <Button variant="pill" className="w-full" size="lg" type="submit">
+              Zaloguj się
             </Button>
           </form>
 
           <p className="text-sm text-muted-foreground text-center mt-6">
-            Don't have an account?{" "}
-            <Link to="/register" className="text-primary hover:underline">Sign up</Link>
+            Nie masz konta?{" "}
+            <Link to="/register" className="text-foreground font-medium hover:underline">Zarejestruj się</Link>
           </p>
         </div>
       </motion.div>
