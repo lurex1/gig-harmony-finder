@@ -1,47 +1,27 @@
 import { motion } from "framer-motion";
 
 const steps = [
-  {
-    step: "01",
-    title: "Create Your Profile",
-    description: "Sign up as a musician or venue. Add your details, genre preferences, and samples.",
-    accent: "border-primary/50",
-  },
-  {
-    step: "02",
-    title: "Go Live",
-    description: "Musicians toggle availability to appear on the map. Venues post gig requirements.",
-    accent: "border-accent/50",
-  },
-  {
-    step: "03",
-    title: "Get Matched",
-    description: "Our AI engine ranks the best matches based on proximity, genre, and style fit.",
-    accent: "border-secondary/50",
-  },
-  {
-    step: "04",
-    title: "Book & Play",
-    description: "Accept the gig, chat to coordinate details, and hit the stage.",
-    accent: "border-primary/50",
-  },
+  { step: "1", title: "Stwórz profil", description: "Zarejestruj się jako muzyk lub lokal. Dodaj swoje dane i preferencje." },
+  { step: "2", title: "Włącz dostępność", description: "Muzycy włączają dostępność, lokale publikują oferty gigów." },
+  { step: "3", title: "Dopasowanie AI", description: "Nasz silnik AI rankuje najlepsze dopasowania wg odległości, gatunku i stylu." },
+  { step: "4", title: "Zarezerwuj i graj", description: "Zaakceptuj gig, ustal szczegóły na czacie i wejdź na scenę." },
 ];
 
 const HowItWorksSection = () => {
   return (
-    <section id="how-it-works" className="py-24 relative">
+    <section id="how-it-works" className="py-20">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-14"
         >
-          <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">
-            How It <span className="text-gradient">Works</span>
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3">
+            Jak to działa
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            From signup to stage in four simple steps.
+            Od rejestracji do sceny w 4 krokach.
           </p>
         </motion.div>
 
@@ -53,10 +33,10 @@ const HowItWorksSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15 }}
-              className={`relative p-6 rounded-xl bg-card border-l-4 ${item.accent}`}
+              className="relative p-6 rounded-xl bg-background border border-border"
             >
-              <span className="font-display text-5xl font-bold text-muted/50">{item.step}</span>
-              <h3 className="font-display text-lg font-semibold mt-3 mb-2 text-foreground">{item.title}</h3>
+              <span className="font-display text-4xl font-bold text-muted-foreground/30">{item.step}</span>
+              <h3 className="font-display text-lg font-semibold mt-2 mb-2 text-foreground">{item.title}</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
             </motion.div>
           ))}
