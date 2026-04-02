@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Music, Building2, Guitar } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/hooks/useAuth";
 
 type Role = "musician" | "venue" | null;
 
@@ -16,10 +17,26 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [gdprConsent, setGdprConsent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation();
+  const { signUp } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!role) return;
+    setError(null);
+    setIsLoading(true);
+
+    const { error } = await signUp(email, password, name, role);
+    if (error) {
+      setError(error);
+      setIsLoading(false);
+      return;
+    }
+
+    navigate('/onboarding');
   };
 
   return (
@@ -80,15 +97,15 @@ const Register = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="name">{role === "musician" ? t('register.artistName') : t('register.venueName')}</Label>
-                <Input id="name" placeholder={role === "musician" ? "The Blue Notes" : "The Jazz Lounge"} value={name} onChange={(e) => setName(e.target.value)} />
+                <Input id="name" placeholder={role === "musician" ? "The Blue Notes" : "The Jazz Lounge"} value={name} onChange={(e) => setName(e.target.value)} required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">{t('register.email')}</Label>
-                <Input id="email" type="email" placeholder="ty@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <Input id="email" type="email" placeholder="ty@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">{t('register.password')}</Label>
-                <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
               </div>
 
               <div className="flex items-start gap-3 pt-2">
@@ -98,8 +115,12 @@ const Register = () => {
                 </Label>
               </div>
 
-              <Button variant="pill" className="w-full" size="lg" type="submit" disabled={!gdprConsent}>
-                {t('register.startFree')}
+              {error && (
+                <p className="text-sm text-destructive">{error}</p>
+              )}
+
+              <Button variant="pill" className="w-full" size="lg" type="submit" disabled={!gdprConsent || isLoading}>
+                {isLoading ? "..." : t('register.startFree')}
               </Button>
               <p className="text-xs text-muted-foreground text-center mt-2">
                 {role === "musician" ? t('register.trialInfoMusician') : t('register.trialInfoVenue')}
