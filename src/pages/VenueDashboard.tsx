@@ -7,6 +7,7 @@ import { Music, MapPin, Plus, MessageSquare, Calendar, Building2, User, LogOut, 
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import MapView from "@/components/MapView";
 
 const mockMatches = [
   { id: 1, name: "Alex Rivera", type: "Solo", genre: "Jazz, Blues", distance: "2.3 km", score: 95, reasonKey: "Perfect genre match, very close, acoustic setup" },
@@ -115,12 +116,8 @@ const VenueDashboard = () => {
                 <h1 className="font-display text-2xl font-bold text-foreground mb-1">{t('venueDash.aiMatches')}</h1>
                 <p className="text-muted-foreground text-sm mb-6">{t('venueDash.bestMusicians')} "{t('venueDash.gigTitlePlaceholder')}"</p>
 
-                <div className="h-56 rounded-xl bg-secondary border border-border flex items-center justify-center mb-6">
-                  <div className="text-center">
-                    <MapPin className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                    <p className="text-sm text-muted-foreground">{t('venueDash.interactiveMap')}</p>
-                    <p className="text-xs text-muted-foreground">{t('venueDash.googleMaps')}</p>
-                  </div>
+                <div className="mb-6">
+                  <MapView role="venue" onSendOffer={(userId) => console.log('send offer to', userId)} />
                 </div>
 
                 <div className="space-y-3">

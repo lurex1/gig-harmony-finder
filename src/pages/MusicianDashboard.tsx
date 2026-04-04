@@ -5,6 +5,7 @@ import { Music, MapPin, MessageSquare, Calendar, User, LogOut, Bell } from "luci
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import MapView from "@/components/MapView";
 
 const mockOffers = [
   { id: 1, venue: "The Blue Note Jazz Club", date: "25 mar 2026", time: "20:00", budget: "$200", genre: "Jazz", score: 95 },
@@ -81,7 +82,11 @@ const MusicianDashboard = () => {
           <div className="flex-1">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
               <h1 className="font-display text-2xl font-bold text-foreground mb-1">{t('musicianDash.gigOffers')}</h1>
-              <p className="text-muted-foreground text-sm mb-6">{t('musicianDash.matchedGigs')}</p>
+              <p className="text-muted-foreground text-sm mb-4">{t('musicianDash.matchedGigs')}</p>
+
+              <div className="mb-6">
+                <MapView role="musician" onAcceptGig={(gigId) => console.log('accept gig', gigId)} />
+              </div>
 
               <div className="space-y-3">
                 {mockOffers.map((offer, i) => (

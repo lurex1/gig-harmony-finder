@@ -1,0 +1,18 @@
+Dodaj klucz Google Maps API do pliku .env jako:
+VITE_GOOGLE_MAPS_API_KEY=AIzaSyDGLvDPDzswsHYpuI0x27A4XbiHoYX8wKw
+Następnie zainstaluj @vis.gl/react-google-maps i stwórz komponent MapView.tsx który:
+- Wyświetla mapę wycentrowaną na lokalizacji użytkownika
+- Dla muzyka pokazuje pinezki z gigami w okolicy
+- Dla lokalu pokazuje pinezki z muzykami w okolicy
+- Po kliknięciu pinezki pokazuje InfoWindow z profilem i przyciskiem CTA
+- Dodaj suwak zasięgu 10-200km
+
+
+
+Dodaj do pliku .env zmienną:
+VITE_GOOGLE_MAPS_MAP_ID=9c52e6791bb98093fd313830
+
+Zaktualizuj komponent MapView.tsx żeby używał tej zmiennej jako mapId w konfiguracji mapy.
+
+
+autentication cloude 9oeWZ0I7XmMcfIYQWS6A7hpzUFl9FmKWqS2eznJlKJo91fbE#317XGuMRHcvCWZp_qJ1coqC2e-4zIaGLUipuzGjPJuk
