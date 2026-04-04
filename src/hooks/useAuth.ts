@@ -61,23 +61,15 @@ export function useAuthState(): AuthContextType {
     name: string,
     role: UserRole
   ): Promise<{ error: string | null }> => {
-    const { data, error } = await supabase.auth.signUp({ email, password })
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { name, role },
+      },
+    })
     if (error) return { error: error.message }
     if (!data.user) return { error: 'Rejestracja nie powiodła się. Spróbuj ponownie.' }
-
-    const { error: profileError } = await supabase.from('profiles').insert({
-      user_id: data.user.id,
-      name,
-      role,
-    })
-    if (profileError) return { error: profileError.message }
-
-    const { error: subError } = await supabase.from('subscriptions').insert({
-      user_id: data.user.id,
-      plan: role,
-      status: 'trial',
-    })
-    if (subError) return { error: subError.message }
 
     return { error: null }
   }

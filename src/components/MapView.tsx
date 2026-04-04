@@ -296,6 +296,7 @@ export default function MapView({ role, onAcceptGig, onSendOffer }: MapViewProps
         .from('musician_profiles')
         .select('user_id, stage_name, genres, instruments, style, repertoire, performance_type, lat, lng, hourly_rate')
         .eq('available', true)
+        .neq('user_id', user?.id ?? '')
         .gte('lat', latMin).lte('lat', latMax)
         .gte('lng', lngMin).lte('lng', lngMax)
 
