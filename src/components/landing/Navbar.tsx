@@ -34,9 +34,8 @@ const Navbar = () => {
         </Link>
 
         <div className="hidden md:flex items-center gap-6">
-          <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t('nav.features')}</a>
-          <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t('nav.pricing')}</a>
           <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t('nav.howItWorks')}</a>
+          <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t('nav.pricing')}</a>
           <Link to="/musician" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t('nav.musician')}</Link>
           <Link to="/venue" className="text-sm text-muted-foreground hover:text-foreground transition-colors">{t('nav.venue')}</Link>
         </div>
@@ -90,9 +89,8 @@ const Navbar = () => {
             className="md:hidden border-t border-border bg-background"
           >
             <div className="container mx-auto px-4 py-4 flex flex-col gap-3">
-              <a href="#features" className="text-sm text-muted-foreground py-2">{t('nav.features')}</a>
-              <a href="#pricing" className="text-sm text-muted-foreground py-2">{t('nav.pricing')}</a>
               <a href="#how-it-works" className="text-sm text-muted-foreground py-2">{t('nav.howItWorks')}</a>
+              <a href="#pricing" className="text-sm text-muted-foreground py-2">{t('nav.pricing')}</a>
               <Link to="/musician" className="text-sm text-muted-foreground py-2">{t('nav.musician')}</Link>
               <Link to="/venue" className="text-sm text-muted-foreground py-2">{t('nav.venue')}</Link>
               
