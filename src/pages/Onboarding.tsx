@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Music, Guitar, Building2, ChevronRight, Loader2, X, Plus } from 'lucide-react'
+import { Music, Guitar, Building2, ChevronRight, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/select'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/lib/supabase'
+import { LocationPicker, type LocationResult } from '@/components/LocationPicker'
 
 const GENRES = [
   'Jazz', 'Blues', 'Rock', 'Pop', 'Klasyczna', 'Folk', 'Country', 'R&B/Soul',
@@ -92,6 +93,11 @@ export default function Onboarding() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // Shared
+  const [location, setLocation] = useState('')
+  const [lat, setLat] = useState<number | null>(null)
+  const [lng, setLng] = useState<number | null>(null)
+
   // Musician fields
   const [genres, setGenres] = useState<string[]>([])
   const [instruments, setInstruments] = useState<string[]>([])
@@ -104,6 +110,12 @@ export default function Onboarding() {
   const [atmosphere, setAtmosphere] = useState('')
   const [occasion, setOccasion] = useState('')
   const [expectations, setExpectations] = useState('')
+
+  const handleLocationSelect = (result: LocationResult) => {
+    setLocation(result.address)
+    setLat(result.lat)
+    setLng(result.lng)
+  }
 
   useEffect(() => {
     if (authLoading) return
@@ -140,9 +152,10 @@ export default function Onboarding() {
           genres,
           instruments,
           hourly_rate: hourlyRate ? parseFloat(hourlyRate) : null,
-          radius,
-          available_days: availableDays,
           bio: bio || null,
+          location: location || null,
+          lat: lat ?? null,
+          lng: lng ?? null,
         },
         { onConflict: 'user_id' }
       )
@@ -153,13 +166,23 @@ export default function Onboarding() {
       }
       navigate('/musician')
     } else {
+      // Use profile name as venue_name fallback
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('name')
+        .eq('user_id', user.id)
+        .single()
+
       const { error } = await supabase.from('venue_profiles').upsert(
         {
           user_id: user.id,
-          venue_name: '',
+          venue_name: profileData?.name ?? '',
           atmosphere: atmosphere || null,
           occasion: occasion || null,
           expectations: expectations || null,
+          location: location || null,
+          lat: lat ?? null,
+          lng: lng ?? null,
         },
         { onConflict: 'user_id' }
       )
@@ -304,6 +327,20 @@ export default function Onboarding() {
                       rows={3}
                     />
                   </div>
+
+                  {/* Lokalizacja — Places Autocomplete, zwraca lat/lng bez Geocoding API */}
+                  <div className="space-y-2">
+                    <Label>Twoja lokalizacja</Label>
+                    <LocationPicker
+                      value={location}
+                      placeholder="np. Warszawa, Kraków, ul. Floriańska 1..."
+                      onSelect={handleLocationSelect}
+                      onRawChange={setLocation}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Potrzebne do wyświetlenia Cię na mapie i obliczenia odległości od lokali.
+                    </p>
+                  </div>
                 </motion.div>
               ) : (
                 <motion.div
@@ -312,6 +349,20 @@ export default function Onboarding() {
                   animate={{ opacity: 1, x: 0 }}
                   className="space-y-4"
                 >
+                  {/* Lokalizacja — Places Autocomplete, zwraca lat/lng bez Geocoding API */}
+                  <div className="space-y-2">
+                    <Label>Adres lokalu</Label>
+                    <LocationPicker
+                      value={location}
+                      placeholder="np. ul. Nowy Świat 15, Warszawa..."
+                      onSelect={handleLocationSelect}
+                      onRawChange={setLocation}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Potrzebne do wyświetlenia lokalu na mapie dla muzyków.
+                    </p>
+                  </div>
+
                   <div className="space-y-2">
                     <Label htmlFor="atmosphere">Atmosfera miejsca</Label>
                     <Input
