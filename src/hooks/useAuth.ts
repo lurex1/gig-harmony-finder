@@ -61,15 +61,37 @@ export function useAuthState(): AuthContextType {
     name: string,
     role: UserRole
   ): Promise<{ error: string | null }> => {
+    // Pass name/role as metadata so a DB trigger can create the profile even
+    // when email confirmation is required (session is null at this point).
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: { name, role },
-      },
+      options: { data: { name, role } },
     })
+
     if (error) return { error: error.message }
     if (!data.user) return { error: 'Rejestracja nie powiodła się. Spróbuj ponownie.' }
+
+    // When email confirmation is disabled Supabase returns a live session
+    // immediately — try the insert now. If email confirmation is enabled the
+    // session will be null and RLS will reject the insert; in that case the
+    // DB trigger handle_new_user (see supabase/migrations) will create the
+    // profile once the user confirms their email.
+    if (data.session) {
+      const { error: profileError } = await supabase.from('profiles').insert({
+        user_id: data.user.id,
+        name,
+        role,
+      })
+      if (profileError) return { error: profileError.message }
+
+      const { error: subError } = await supabase.from('subscriptions').insert({
+        user_id: data.user.id,
+        plan: role,
+        status: 'trial',
+      })
+      if (subError) return { error: subError.message }
+    }
 
     return { error: null }
   }
