@@ -4,6 +4,7 @@ import { Send, Loader2, MessageSquare, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/hooks/useAuth'
+import { useTranslation } from 'react-i18next'
 import type { Conversation, ChatMessage } from '@/hooks/useChat'
 
 interface Props {
@@ -18,11 +19,11 @@ interface Props {
 }
 
 function formatTime(iso: string) {
-  return new Date(iso).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' })
+  return new Date(iso).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
 }
 
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' })
+  return new Date(iso).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })
 }
 
 export function ChatPanel({
@@ -36,6 +37,7 @@ export function ChatPanel({
   onSend,
 }: Props) {
   const { user } = useAuth()
+  const { t } = useTranslation()
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
   const [mobileShowChat, setMobileShowChat] = useState(false)
@@ -65,7 +67,7 @@ export function ChatPanel({
     return (
       <div className="flex items-center justify-center py-20 gap-3 text-muted-foreground">
         <Loader2 className="w-5 h-5 animate-spin" />
-        <span>Ładowanie rozmów…</span>
+        <span>{t('chat.loading')}</span>
       </div>
     )
   }
@@ -74,9 +76,11 @@ export function ChatPanel({
     return (
       <div className="text-center py-16 text-muted-foreground">
         <MessageSquare className="w-10 h-10 mx-auto mb-3 opacity-30" />
-        <p className="font-medium text-foreground mb-1">Brak aktywnych rozmów</p>
+        <p className="font-medium text-foreground mb-1">{t('chat.noConversationsTitle')}</p>
         <p className="text-sm">
-          Zatwierdź {role === 'musician' ? 'lokale' : 'muzyków'} z listy Propozycji, aby otworzyć czat.
+          {role === 'musician'
+            ? t('chat.noConversationsDescMusician')
+            : t('chat.noConversationsDescVenue')}
         </p>
       </div>
     )
@@ -91,7 +95,9 @@ export function ChatPanel({
         }`}
       >
         <div className="p-3 border-b border-border">
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Rozmowy</p>
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+            {t('chat.conversations')}
+          </p>
         </div>
         <div className="overflow-y-auto flex-1">
           {conversations.map(conv => (
@@ -135,7 +141,7 @@ export function ChatPanel({
           {activeConv ? (
             <span className="font-medium text-sm text-foreground">{activeConv.other_party_name}</span>
           ) : (
-            <span className="text-sm text-muted-foreground">Wybierz rozmowę</span>
+            <span className="text-sm text-muted-foreground">{t('chat.selectConversation')}</span>
           )}
         </div>
 
@@ -143,7 +149,7 @@ export function ChatPanel({
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {!activeConvId && (
             <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
-              Wybierz rozmowę z listy
+              {t('chat.selectFromList')}
             </div>
           )}
 
@@ -155,7 +161,7 @@ export function ChatPanel({
 
           {activeConvId && !msgLoading && messages.length === 0 && (
             <div className="text-center text-muted-foreground text-sm py-8">
-              Zacznij rozmowę — napisz pierwszą wiadomość!
+              {t('chat.startMessage')}
             </div>
           )}
 
@@ -194,7 +200,7 @@ export function ChatPanel({
             <Input
               value={input}
               onChange={e => setInput(e.target.value)}
-              placeholder="Napisz wiadomość…"
+              placeholder={t('chat.placeholder')}
               className="flex-1"
               disabled={sending}
             />

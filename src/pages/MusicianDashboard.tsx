@@ -15,6 +15,7 @@ import { ChatPanel } from '@/components/ChatPanel'
 import { AvatarUpload } from '@/components/AvatarUpload'
 import { MusicianProfileEditor } from '@/components/MusicianProfileEditor'
 import { supabase } from '@/lib/supabase'
+import { useTranslation } from 'react-i18next'
 
 type View = 'proposals' | 'chat' | 'calendar' | 'profile'
 
@@ -24,12 +25,12 @@ interface SidebarProfile {
   avatarUrl: string | null
 }
 
-// ─── Nav items ────────────────────────────────────────────────────────────────
-const NAV: { icon: React.ElementType; label: string; view: View }[] = [
-  { icon: Zap,           label: 'Propozycje',   view: 'proposals' },
-  { icon: MessageSquare, label: 'Wiadomości',   view: 'chat' },
-  { icon: CalendarDays,  label: 'Kalendarz',    view: 'calendar' },
-  { icon: User2,         label: 'Mój profil',   view: 'profile' },
+// ─── Nav items are built inside component (need translations) ─────────────────
+const NAV_ICONS: { icon: React.ElementType; view: View }[] = [
+  { icon: Zap,           view: 'proposals' },
+  { icon: MessageSquare, view: 'chat' },
+  { icon: CalendarDays,  view: 'calendar' },
+  { icon: User2,         view: 'profile' },
 ]
 
 // ─── Sidebar ─────────────────────────────────────────────────────────────────
@@ -52,9 +53,15 @@ function Sidebar({
   onAvatarChange: (url: string) => void
   onNameChange: (name: string) => void
 }) {
+  const { t } = useTranslation()
   const name     = profile?.name ?? '…'
   const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
-  const genre    = profile?.genres?.slice(0, 2).join(' · ') || 'Muzyk'
+  const genre    = profile?.genres?.slice(0, 2).join(' · ') || t('musicianDashNew.musicianBadge')
+
+  const NAV = NAV_ICONS.map(item => ({
+    ...item,
+    label: t(`musicianDashNew.${item.view}`),
+  }))
 
   return (
     <aside className="flex flex-col gap-6">
@@ -80,7 +87,7 @@ function Sidebar({
           <div>
             <h2 className="font-display text-lg font-bold text-foreground leading-tight">{name}</h2>
             <span className="inline-flex items-center gap-1 mt-1 px-2.5 py-0.5 rounded-full bg-secondary border border-border text-xs font-medium text-muted-foreground">
-              <Music className="w-3 h-3" /> Muzyk
+              <Music className="w-3 h-3" /> {t('musicianDashNew.musicianBadge')}
             </span>
             {profile?.genres?.length ? (
               <p className="text-xs text-muted-foreground mt-1.5">{genre}</p>
@@ -123,7 +130,7 @@ function Sidebar({
         className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-all mt-auto"
       >
         <LogOut className="w-4 h-4" />
-        Wyloguj się
+        {t('musicianDashNew.signOut')}
       </button>
     </aside>
   )
@@ -139,6 +146,7 @@ export default function MusicianDashboard() {
   const [profile,       setProfile]       = useState<SidebarProfile | null>(null)
   const [profileLoading, setProfileLoading] = useState(true)
 
+  const { t } = useTranslation()
   const { matches, loading: matchLoading, error: matchError, hasProfile, refresh } = useMatches('musician')
   const chat = useChat('musician')
 
@@ -183,20 +191,20 @@ export default function MusicianDashboard() {
 
   const viewMeta: Record<View, { title: string; desc: string }> = {
     proposals: {
-      title: 'Propozycje gigów',
-      desc:  'Lokale dopasowane przez AI (próg 50%). Zaznacz kilka i zatwierdź, aby otworzyć czat.',
+      title: t('musicianDashNew.proposalsTitle'),
+      desc:  t('musicianDashNew.proposalsDesc'),
     },
     chat: {
-      title: 'Wiadomości',
-      desc:  'Twoje aktywne rozmowy z lokalami.',
+      title: t('musicianDashNew.messagesTitle'),
+      desc:  t('musicianDashNew.messagesDesc'),
     },
     calendar: {
-      title: 'Kalendarz',
-      desc:  'Twoje zaplanowane występy.',
+      title: t('musicianDashNew.calendarTitle'),
+      desc:  t('musicianDashNew.calendarDesc'),
     },
     profile: {
-      title: 'Mój profil',
-      desc:  'Uzupełnij profil — AI lepiej dopasuje Cię do lokali.',
+      title: t('musicianDashNew.profileTitle'),
+      desc:  t('musicianDashNew.profileDesc'),
     },
   }
 
@@ -345,9 +353,9 @@ export default function MusicianDashboard() {
                 {activeView === 'calendar' && (
                   <div className="flex flex-col items-center justify-center py-20 text-center">
                     <CalendarDays className="w-10 h-10 text-muted-foreground/40 mb-3" />
-                    <p className="font-medium text-foreground mb-1">Kalendarz wkrótce</p>
+                    <p className="font-medium text-foreground mb-1">{t('musicianDashNew.calendarSoon')}</p>
                     <p className="text-sm text-muted-foreground">
-                      Przeglądanie i zarządzanie zaplanowanymi gigami — coming soon.
+                      {t('musicianDashNew.calendarSoonDesc')}
                     </p>
                   </div>
                 )}

@@ -15,6 +15,7 @@ import { Switch }   from '@/components/ui/switch'
 import { AvatarUpload } from '@/components/AvatarUpload'
 import { supabase } from '@/lib/supabase'
 import { useToast } from '@/hooks/use-toast'
+import { useTranslation } from 'react-i18next'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -118,11 +119,12 @@ function CheckGroup({
 }
 
 function SaveBtn({ loading, saved }: { loading: boolean; saved: boolean }) {
+  const { t } = useTranslation()
   return (
     <Button type="submit" variant="pill" size="sm" disabled={loading} className="mt-4">
       {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" /> :
        saved   ? <CheckCircle2 className="w-3.5 h-3.5 mr-1.5 text-green-500" /> : null}
-      {loading ? 'Zapisuję…' : saved ? 'Zapisano!' : 'Zapisz sekcję'}
+      {loading ? t('musicianProfile.saving') : saved ? t('musicianProfile.saved') : t('musicianProfile.saveSection')}
     </Button>
   )
 }
@@ -137,6 +139,7 @@ interface Props {
 
 export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: Props) {
   const { toast } = useToast()
+  const { t } = useTranslation()
 
   // Loading
   const [loading, setLoading] = useState(true)
@@ -213,7 +216,7 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
 
     setSaving(s => ({ ...s, [section]: false }))
     if (error) {
-      toast({ title: 'Błąd zapisu', description: error.message, variant: 'destructive' })
+      toast({ title: t('musicianProfile.saveError'), description: error.message, variant: 'destructive' })
     } else {
       flash(section)
     }
@@ -238,8 +241,8 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
               <User className="w-4 h-4 text-foreground" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-semibold text-foreground">Podstawowe info</p>
-              <p className="text-xs text-muted-foreground">Nazwa artysty, bio, zdjęcie</p>
+              <p className="text-sm font-semibold text-foreground">{t('musicianProfile.basicTitle')}</p>
+              <p className="text-xs text-muted-foreground">{t('musicianProfile.basicDesc')}</p>
             </div>
           </div>
         </AccordionTrigger>
@@ -260,27 +263,27 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
                 onUploaded={url => { setAvatarUrl(url); onAvatarChange(url) }}
               />
               <p className="text-xs text-muted-foreground mt-2">
-                Kliknij zdjęcie aby je zmienić.<br />JPG, PNG, WebP · max 5 MB
+                {t('musicianProfile.avatarHint')}<br />{t('musicianProfile.avatarHint2')}
               </p>
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="stageName">Nazwa artysty / zespołu</Label>
+              <Label htmlFor="stageName">{t('musicianProfile.stageName')}</Label>
               <Input
                 id="stageName"
                 value={stageName}
                 onChange={e => setStageName(e.target.value)}
-                placeholder="np. The Blue Notes, Anna Kowalska"
+                placeholder={t('musicianProfile.stageNamePlaceholder')}
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="bio">Bio <span className="text-muted-foreground">(opcjonalnie)</span></Label>
+              <Label htmlFor="bio">{t('musicianProfile.bio')} <span className="text-muted-foreground">{t('musicianProfile.bioOptional')}</span></Label>
               <Textarea
                 id="bio"
                 value={bio}
                 onChange={e => setBio(e.target.value)}
-                placeholder="Kilka słów o sobie, doświadczeniu, stylu..."
+                placeholder={t('musicianProfile.bioPlaceholder')}
                 rows={3}
               />
             </div>
@@ -298,8 +301,8 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
               <Music2 className="w-4 h-4 text-foreground" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-semibold text-foreground">Muzyczne preferencje</p>
-              <p className="text-xs text-muted-foreground">Gatunki, instrumenty, typ wykonania</p>
+              <p className="text-sm font-semibold text-foreground">{t('musicianProfile.musicTitle')}</p>
+              <p className="text-xs text-muted-foreground">{t('musicianProfile.musicDesc')}</p>
             </div>
           </div>
         </AccordionTrigger>
@@ -316,17 +319,17 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
             className="space-y-5"
           >
             <div className="space-y-2">
-              <Label>Gatunki muzyczne</Label>
+              <Label>{t('musicianProfile.genresLabel')}</Label>
               <TagPicker options={GENRES} selected={genres} onChange={setGenres} />
             </div>
 
             <div className="space-y-2">
-              <Label>Instrumenty / umiejętności</Label>
+              <Label>{t('musicianProfile.instrumentsLabel')}</Label>
               <TagPicker options={INSTRUMENTS} selected={instruments} onChange={setInstruments} />
             </div>
 
             <div className="space-y-2">
-              <Label>Typ wykonania</Label>
+              <Label>{t('musicianProfile.performanceTypeLabel')}</Label>
               <RadioGroup options={PERFORMANCE_TYPES} value={perfType} onChange={setPerfType} />
             </div>
 
@@ -343,8 +346,8 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
               <Building2 className="w-4 h-4 text-foreground" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-semibold text-foreground">Preferencje lokali</p>
-              <p className="text-xs text-muted-foreground">Typ sceny, atmosfera</p>
+              <p className="text-sm font-semibold text-foreground">{t('musicianProfile.venuePrefsTitle')}</p>
+              <p className="text-xs text-muted-foreground">{t('musicianProfile.venuePrefsDesc')}</p>
             </div>
           </div>
         </AccordionTrigger>
@@ -360,12 +363,12 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
             className="space-y-5"
           >
             <div className="space-y-2">
-              <Label>Typ sceny / wielkość lokalu</Label>
+              <Label>{t('musicianProfile.venueSizeLabel')}</Label>
               <CheckGroup options={VENUE_SIZES} selected={venueSizes} onChange={setVenueSizes} />
             </div>
 
             <div className="space-y-2">
-              <Label>Preferowana atmosfera</Label>
+              <Label>{t('musicianProfile.venueAtmosphereLabel')}</Label>
               <CheckGroup options={ATMOSPHERES} selected={venueAtm} onChange={setVenueAtm} />
             </div>
 
@@ -382,9 +385,9 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
               <Banknote className="w-4 h-4 text-foreground" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-semibold text-foreground">Finanse</p>
+              <p className="text-sm font-semibold text-foreground">{t('musicianProfile.financeTitle')}</p>
               <p className="text-xs text-muted-foreground">
-                Stawka: {proBono ? 'pro bono' : `${rateMin}–${rateMax} zł`}
+                {proBono ? t('musicianProfile.financeProBonoRate') : `${rateMin}–${rateMax} zł`}
               </p>
             </div>
           </div>
@@ -403,7 +406,7 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
           >
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label>Stawka za gig (PLN)</Label>
+                <Label>{t('musicianProfile.financeRateLabel')}</Label>
                 <span className="text-sm font-semibold text-foreground">
                   {rateMin} – {rateMax} zł
                 </span>
@@ -411,7 +414,7 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
 
               <div className="space-y-3">
                 <div className="space-y-1.5">
-                  <p className="text-xs text-muted-foreground">Od</p>
+                  <p className="text-xs text-muted-foreground">{t('musicianProfile.rateFrom')}</p>
                   <Slider
                     min={0} max={5000} step={50}
                     value={[rateMin]}
@@ -419,7 +422,7 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <p className="text-xs text-muted-foreground">Do</p>
+                  <p className="text-xs text-muted-foreground">{t('musicianProfile.rateTo')}</p>
                   <Slider
                     min={0} max={5000} step={50}
                     value={[rateMax]}
@@ -437,10 +440,10 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
               />
               <div>
                 <Label htmlFor="proBono" className="cursor-pointer text-sm font-medium">
-                  Gram również pro bono
+                  {t('musicianProfile.proBono')}
                 </Label>
                 <p className="text-xs text-muted-foreground">
-                  Chcę grać na wydarzeniach charytatywnych lub dla początkujących lokali
+                  {t('musicianProfile.proBonoDesc')}
                 </p>
               </div>
             </div>
@@ -458,10 +461,10 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
               <CalendarDays className="w-4 h-4 text-foreground" />
             </div>
             <div className="text-left">
-              <p className="text-sm font-semibold text-foreground">Dostępność</p>
+              <p className="text-sm font-semibold text-foreground">{t('musicianProfile.availabilityTitle')}</p>
               <p className="text-xs text-muted-foreground">
-                {days.length ? days.map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(', ') : 'Dni tygodnia'}
-                {' · '}{radius} km zasięg
+                {days.length ? days.map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(', ') : t('musicianProfile.availabilityDays')}
+                {' · '}{radius} km {t('musicianProfile.availabilityDaysTitle')}
               </p>
             </div>
           </div>
@@ -475,7 +478,7 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
             className="space-y-5"
           >
             <div className="space-y-2">
-              <Label>Dostępne dni tygodnia</Label>
+              <Label>{t('musicianProfile.availabilityDays')}</Label>
               <div className="flex gap-1.5">
                 {DAYS.map(day => (
                   <button
@@ -497,7 +500,7 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
 
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label>Maksymalny zasięg</Label>
+                <Label>{t('musicianProfile.maxRadius')}</Label>
                 <span className="text-sm font-semibold text-foreground">{radius} km</span>
               </div>
               <Slider

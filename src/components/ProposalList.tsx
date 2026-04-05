@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Loader2, RefreshCw, UserCheck, MessageSquare, Building2, Music2, Sparkles } from 'lucide-react'
+import { Loader2, RefreshCw, MessageSquare, Building2, Music2, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { useTranslation } from 'react-i18next'
 import type { MatchResult } from '@/hooks/useMatches'
 
 interface Props {
@@ -118,6 +119,7 @@ function MatchCard({
 }
 
 export function ProposalList({ role, matches, loading, error, hasProfile, onApprove, onRefresh }: Props) {
+  const { t } = useTranslation()
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [approving, setApproving] = useState(false)
 
@@ -144,9 +146,9 @@ export function ProposalList({ role, matches, loading, error, hasProfile, onAppr
         <div className="w-12 h-12 rounded-xl bg-secondary border border-border flex items-center justify-center mx-auto mb-4">
           <Music2 className="w-6 h-6 text-muted-foreground" />
         </div>
-        <p className="font-semibold text-foreground mb-1">Uzupełnij profil</p>
+        <p className="font-semibold text-foreground mb-1">{t('proposals.noProfileTitle')}</p>
         <p className="text-sm text-muted-foreground">
-          Wypełnij preferencje muzyczne, aby AI mogło Cię dopasować do lokali.
+          {role === 'musician' ? t('proposals.noProfileDescMusician') : t('proposals.noProfileDescVenue')}
         </p>
       </div>
     )
@@ -156,7 +158,7 @@ export function ProposalList({ role, matches, loading, error, hasProfile, onAppr
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-3">
         <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
-        <p className="text-sm text-muted-foreground">AI analizuje dopasowania…</p>
+        <p className="text-sm text-muted-foreground">{t('proposals.analyzing')}</p>
       </div>
     )
   }
@@ -166,7 +168,7 @@ export function ProposalList({ role, matches, loading, error, hasProfile, onAppr
       <div className="text-center py-16">
         <p className="text-sm text-destructive mb-4">{error}</p>
         <Button variant="ghost" size="sm" onClick={onRefresh}>
-          <RefreshCw className="w-4 h-4 mr-2" /> Spróbuj ponownie
+          <RefreshCw className="w-4 h-4 mr-2" /> {t('proposals.tryAgain')}
         </Button>
       </div>
     )
@@ -178,28 +180,28 @@ export function ProposalList({ role, matches, loading, error, hasProfile, onAppr
         <div className="w-12 h-12 rounded-xl bg-secondary border border-border flex items-center justify-center mx-auto mb-4">
           <Sparkles className="w-6 h-6 text-muted-foreground" />
         </div>
-        <p className="font-semibold text-foreground mb-1">Brak dopasowań powyżej 50%</p>
+        <p className="font-semibold text-foreground mb-1">{t('proposals.noMatchesTitle')}</p>
         <p className="text-sm text-muted-foreground mb-4">
-          Gdy pojawią się nowi {role === 'musician' ? 'lokale' : 'muzycy'}, AI automatycznie je oceni.
+          {role === 'musician' ? t('proposals.noMatchesDescMusician') : t('proposals.noMatchesDescVenue')}
         </p>
         <Button variant="outline" size="sm" onClick={onRefresh}>
-          <RefreshCw className="w-3.5 h-3.5 mr-2" /> Odśwież
+          <RefreshCw className="w-3.5 h-3.5 mr-2" /> {t('proposals.refresh')}
         </Button>
       </div>
     )
   }
 
-  const targetLabel = role === 'musician' ? 'lokali' : 'muzyków'
+  const targetLabel = role === 'musician' ? t('proposals.venues') : t('proposals.musicians')
 
   return (
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          <span className="font-semibold text-foreground">{matches.length}</span> {targetLabel} · próg 50%
+          <span className="font-semibold text-foreground">{matches.length}</span> {targetLabel} · {t('proposals.threshold')}
         </p>
         <Button variant="ghost" size="sm" onClick={onRefresh}>
-          <RefreshCw className="w-3.5 h-3.5 mr-1.5" /> Odśwież
+          <RefreshCw className="w-3.5 h-3.5 mr-1.5" /> {t('proposals.refresh')}
         </Button>
       </div>
 
@@ -233,7 +235,10 @@ export function ProposalList({ role, matches, loading, error, hasProfile, onAppr
                   <span className="text-background text-xs font-bold">{selected.size}</span>
                 </div>
                 <span className="text-sm font-medium text-foreground">
-                  {selected.size === 1 ? `1 ${role === 'musician' ? 'lokal' : 'muzyk'}` : `${selected.size} ${targetLabel}`} zaznaczone
+                  {selected.size === 1
+                    ? `1 ${role === 'musician' ? t('proposals.venueSingle') : t('proposals.musicianSingle')}`
+                    : `${selected.size} ${targetLabel}`
+                  } {t('proposals.selected')}
                 </span>
               </div>
               <Button
@@ -247,7 +252,7 @@ export function ProposalList({ role, matches, loading, error, hasProfile, onAppr
                   ? <Loader2 className="w-4 h-4 animate-spin" />
                   : <MessageSquare className="w-4 h-4" />
                 }
-                {approving ? 'Otwieranie…' : 'Zatwierdź i czatuj'}
+                {approving ? t('proposals.approving') : t('proposals.approve')}
               </Button>
             </div>
           </motion.div>

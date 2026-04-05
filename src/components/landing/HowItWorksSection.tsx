@@ -1,58 +1,31 @@
 import { motion } from "framer-motion";
 import { MapPin, Brain, MessageSquare, CreditCard } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-const steps = [
-  {
-    n: "1",
-    title: "Zarejestruj się",
-    desc: "Wybierz rolę — muzyk lub lokal. 7 dni trial za darmo, bez karty kredytowej.",
-  },
-  {
-    n: "2",
-    title: "Wypełnij profil",
-    desc: "Podaj gatunki, instrumenty, atmosferę miejsca i ustaw lokalizację jednym kliknięciem.",
-  },
-  {
-    n: "3",
-    title: "AI dopasowuje",
-    desc: "Claude AI analizuje kompatybilność stylu, budżetu i atmosfery. Widzisz tylko dopasowania ≥ 50%.",
-  },
-  {
-    n: "4",
-    title: "Czatuj i umawiaj gig",
-    desc: "Zatwierdź propozycję — otwiera się czat real-time. Ustalcie szczegóły i grajcie.",
-  },
-];
-
-const features = [
-  {
-    icon: MapPin,
-    title: "Mapa na żywo",
-    desc: "Muzycy i gigi widoczni na mapie Google w Twojej okolicy z wynikiem AI na pinie.",
-  },
-  {
-    icon: Brain,
-    title: "AI Matching",
-    desc: "Claude AI ocenia zgodność stylu, budżetu i atmosfery. Drastyczna niezgodność wyklucza dopasowanie.",
-  },
-  {
-    icon: MessageSquare,
-    title: "Czat real-time",
-    desc: "Każde zatwierdzenie propozycji otwiera bezpośredni czat. Równoległe rozmowy z wieloma stronami.",
-  },
-  {
-    icon: CreditCard,
-    title: "Prosty cennik",
-    desc: "7 dni za darmo. Muzyk: 7,99 zł/mies. Lokal: 15,99 zł/mies. Anuluj kiedy chcesz.",
-  },
-];
+const featureIcons = [MapPin, Brain, MessageSquare, CreditCard];
 
 const HowItWorksSection = () => {
+  const { t } = useTranslation();
+
+  const steps = [
+    { n: "1", title: t("howItWorks.step1Title"), desc: t("howItWorks.step1Desc") },
+    { n: "2", title: t("howItWorks.step2Title"), desc: t("howItWorks.step2Desc") },
+    { n: "3", title: t("howItWorks.step3Title"), desc: t("howItWorks.step3Desc") },
+    { n: "4", title: t("howItWorks.step4Title"), desc: t("howItWorks.step4Desc") },
+  ];
+
+  const features = [
+    { icon: featureIcons[0], title: t("howItWorks.feat1Title"), desc: t("howItWorks.feat1Desc") },
+    { icon: featureIcons[1], title: t("howItWorks.feat2Title"), desc: t("howItWorks.feat2Desc") },
+    { icon: featureIcons[2], title: t("howItWorks.feat3Title"), desc: t("howItWorks.feat3Desc") },
+    { icon: featureIcons[3], title: t("howItWorks.feat4Title"), desc: t("howItWorks.feat4Desc") },
+  ];
+
   return (
     <section id="how-it-works" className="py-24 bg-background">
       <div className="container mx-auto px-4">
 
-        {/* ── Nagłówek ─────────────────────────────────────────────────────── */}
+        {/* ── Header ─────────────────────────────────────────────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -60,14 +33,14 @@ const HowItWorksSection = () => {
           className="text-center mb-16"
         >
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3">
-            Jak to działa?
+            {t("howItWorks.title")}
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            Od rejestracji do pierwszego giga w kilka minut.
+            {t("howItWorks.subtitle")}
           </p>
         </motion.div>
 
-        {/* ── 4 kroki ──────────────────────────────────────────────────────── */}
+        {/* ── 4 steps ──────────────────────────────────────────────────────── */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
           {steps.map((step, i) => (
             <motion.div
@@ -78,7 +51,6 @@ const HowItWorksSection = () => {
               transition={{ delay: i * 0.12 }}
               className="relative p-6 rounded-xl bg-background border border-border"
             >
-              {/* Linia łącząca kroki (desktop) */}
               {i < steps.length - 1 && (
                 <div className="hidden lg:block absolute top-10 left-full w-6 border-t border-dashed border-border z-10" />
               )}
@@ -101,10 +73,10 @@ const HowItWorksSection = () => {
           className="text-center mb-12"
         >
           <h3 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">
-            Wszystko czego potrzebujesz
+            {t("howItWorks.featuresTitle")}
           </h3>
           <p className="text-muted-foreground max-w-lg mx-auto text-sm">
-            Jeden produkt zamiast arkuszy, telefonów i ogłoszeń.
+            {t("howItWorks.featuresSubtitle")}
           </p>
         </motion.div>
 

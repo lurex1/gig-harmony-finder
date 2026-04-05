@@ -15,6 +15,7 @@ import { useChat } from '@/hooks/useChat'
 import { ProposalList } from '@/components/ProposalList'
 import { ChatPanel } from '@/components/ChatPanel'
 import { supabase } from '@/lib/supabase'
+import { useTranslation } from 'react-i18next'
 
 type View = 'proposals' | 'chat' | 'post-gig' | 'profile'
 
@@ -29,6 +30,7 @@ export default function VenueDashboard() {
   const { user, signOut, loading: authLoading } = useAuth()
   const navigate = useNavigate()
   const { toast } = useToast()
+  const { t } = useTranslation()
   const [activeView, setActiveView] = useState<View>('proposals')
   const [myProfile, setMyProfile] = useState<MyProfile | null>(null)
   const [profileLoading, setProfileLoading] = useState(true)
@@ -92,9 +94,9 @@ export default function VenueDashboard() {
     setGigPosting(false)
 
     if (error) {
-      toast({ title: 'Błąd', description: error.message, variant: 'destructive' })
+      toast({ title: t('venueDashNew.error'), description: error.message, variant: 'destructive' })
     } else {
-      toast({ title: 'Gig opublikowany!', description: 'Muzycy zobaczą go na mapie.' })
+      toast({ title: t('venueDashNew.gigPublished'), description: t('venueDashNew.gigPublishedDesc') })
       setGigTitle('')
       setGigDate('')
       setGigTime('')
@@ -118,10 +120,10 @@ export default function VenueDashboard() {
   }
 
   const navItems: { icon: typeof MapPin; label: string; view: View }[] = [
-    { icon: MapPin, label: 'Znajdź muzyków', view: 'proposals' },
-    { icon: MessageSquare, label: 'Wiadomości', view: 'chat' },
-    { icon: Calendar, label: 'Moje gigi', view: 'post-gig' },
-    { icon: Building2, label: 'Profil lokalu', view: 'profile' },
+    { icon: MapPin, label: t('venueDashNew.findMusiciansNav'), view: 'proposals' },
+    { icon: MessageSquare, label: t('venueDashNew.messagesTitle'), view: 'chat' },
+    { icon: Calendar, label: t('venueDashNew.myGigsNav'), view: 'post-gig' },
+    { icon: Building2, label: t('venueDashNew.venueProfileNav'), view: 'profile' },
   ]
 
   const displayName = myProfile?.venue_name ?? '…'
@@ -187,7 +189,7 @@ export default function VenueDashboard() {
               className="w-full"
               onClick={() => setActiveView('post-gig')}
             >
-              <Plus className="w-4 h-4 mr-1" /> Dodaj gig
+              <Plus className="w-4 h-4 mr-1" /> {t('venueDashNew.addGig')}
             </Button>
           </div>
 
@@ -196,10 +198,10 @@ export default function VenueDashboard() {
             {activeView === 'proposals' && (
               <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
                 <h1 className="font-display text-2xl font-bold text-foreground mb-1">
-                  Dopasowani muzycy
+                  {t('venueDashNew.findMusiciansTitle')}
                 </h1>
                 <p className="text-muted-foreground text-sm mb-6">
-                  Muzycy dopasowani przez AI (próg: 50%). Zaznacz i zatwierdź, aby otworzyć czat.
+                  {t('venueDashNew.findMusiciansDesc')}
                 </p>
                 <ProposalList
                   role="venue"
@@ -216,10 +218,10 @@ export default function VenueDashboard() {
             {activeView === 'chat' && (
               <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
                 <h1 className="font-display text-2xl font-bold text-foreground mb-1">
-                  Wiadomości
+                  {t('venueDashNew.messagesTitle')}
                 </h1>
                 <p className="text-muted-foreground text-sm mb-6">
-                  Rozmowy z muzykami. Nowe czaty otwierasz z listy Dopasowań.
+                  {t('venueDashNew.messagesDesc')}
                 </p>
                 <ChatPanel
                   role="venue"
@@ -241,16 +243,16 @@ export default function VenueDashboard() {
                 className="max-w-lg"
               >
                 <div className="flex items-center justify-between mb-6">
-                  <h1 className="font-display text-2xl font-bold text-foreground">Dodaj gig</h1>
+                  <h1 className="font-display text-2xl font-bold text-foreground">{t('venueDashNew.addGig')}</h1>
                   <Button variant="ghost" size="sm" onClick={() => setActiveView('proposals')}>
-                    Anuluj
+                    {t('venueDashNew.addGigCancel')}
                   </Button>
                 </div>
                 <form onSubmit={handlePostGig} className="space-y-4 p-6 rounded-xl border border-border">
                   <div className="space-y-2">
-                    <Label>Tytuł giga</Label>
+                    <Label>{t('venueDashNew.gigTitleLabel')}</Label>
                     <Input
-                      placeholder="np. Wieczór jazzowy w piątek"
+                      placeholder={t('venueDashNew.gigTitlePlaceholder')}
                       value={gigTitle}
                       onChange={e => setGigTitle(e.target.value)}
                       required
@@ -258,7 +260,7 @@ export default function VenueDashboard() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label>Data</Label>
+                      <Label>{t('venueDashNew.gigDate')}</Label>
                       <Input
                         type="date"
                         value={gigDate}
@@ -267,7 +269,7 @@ export default function VenueDashboard() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>Godzina</Label>
+                      <Label>{t('venueDashNew.gigTime')}</Label>
                       <Input
                         type="time"
                         value={gigTime}
@@ -276,7 +278,7 @@ export default function VenueDashboard() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label>Budżet (zł)</Label>
+                    <Label>{t('venueDashNew.gigBudget')}</Label>
                     <Input
                       type="number"
                       placeholder="np. 500"
@@ -285,9 +287,9 @@ export default function VenueDashboard() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Wymagania / gatunek</Label>
+                    <Label>{t('venueDashNew.gigRequirements')}</Label>
                     <Textarea
-                      placeholder="np. jazz, akustyczny, cisza po 23:00"
+                      placeholder={t('venueDashNew.gigRequirementsPlaceholder')}
                       value={gigRequirements}
                       onChange={e => setGigRequirements(e.target.value)}
                       rows={3}
@@ -303,7 +305,7 @@ export default function VenueDashboard() {
                     {gigPosting ? (
                       <Loader2 className="w-4 h-4 animate-spin mr-2" />
                     ) : null}
-                    {gigPosting ? 'Publikuję…' : 'Opublikuj i znajdź muzyków'}
+                    {gigPosting ? t('venueDashNew.publishing') : t('venueDashNew.publishBtn')}
                   </Button>
                 </form>
               </motion.div>
@@ -312,13 +314,13 @@ export default function VenueDashboard() {
             {activeView === 'profile' && (
               <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
                 <h1 className="font-display text-2xl font-bold text-foreground mb-1">
-                  Profil lokalu
+                  {t('venueDashNew.profileTitle')}
                 </h1>
                 <p className="text-muted-foreground text-sm mb-4">
-                  Uzupełnij profil aby AI lepiej dopasowywało muzyków.
+                  {t('venueDashNew.profileDesc')}
                 </p>
                 <Link to="/onboarding">
-                  <Button variant="pill">Edytuj preferencje</Button>
+                  <Button variant="pill">{t('venueDashNew.editPreferences')}</Button>
                 </Link>
               </motion.div>
             )}
