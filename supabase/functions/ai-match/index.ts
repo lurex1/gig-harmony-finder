@@ -57,52 +57,56 @@ function describeVenueShort(v: VenueProfile): string {
 }
 
 function buildBatchMusicianPrompt(musician: MusicianProfile, venues: VenueProfile[]): string {
-  const musicianDesc = describeMusicianShort(musician) || "Brak danych muzyka";
+  const musicianDesc = describeMusicianShort(musician) || "Brak danych";
   const venueList = venues
-    .map((v, i) => `[${i}] user_id="${v.user_id}" | ${describeVenueShort(v) || "Brak danych lokalu"}`)
+    .map((v, i) => `[${i}] user_id="${v.user_id}" | ${describeVenueShort(v) || "Brak danych"}`)
     .join("\n");
 
-  return `Jesteś ekspertem od doboru muzyki na żywo do lokali gastronomicznych i eventowych.
+  return `Jesteś ekspertem od kojarzenia muzyków z lokalami.
 
 PROFIL MUZYKA:
 ${musicianDesc}
 
-LOKALE DO OCENY (oceń każdy):
+LOKALE DO OCENY:
 ${venueList}
 
-ZASADY OCENIANIA (ważne!):
-1. Skala 0–100. Próg dopasowania = 50.
-2. DRASTYCZNA rozbieżność (np. stawka muzyka >3× budżet lokalu, zupełnie sprzeczne style muzyczne) → wynik 0–25, WYKLUCZA dopasowanie.
-3. Pole puste po OBU stronach → pomiń ten element, nie karaj.
-4. Pole wypełnione tylko PO JEDNEJ stronie → małe obniżenie (−5 do −10 pkt), NIE wyklucza.
-5. Uzasadnienie: 1–2 zdania po polsku, konkretnie dlaczego taki wynik.
+ZASADY (przestrzegaj ściśle):
+1. Skala 0–100. Wyniki poniżej 50 oznaczają brak dopasowania.
+2. PUSTE POLE po którejkolwiek lub obu stronach = POMIŃ ten element całkowicie, nie obniżaj wyniku.
+3. Oceniaj TYLKO pola, które są wypełnione po OBU stronach — porównuj je i sprawdzaj zgodność.
+4. Jeśli oba profile mają mało danych (lub żadnych) ale brak jawnych sprzeczności → wynik 60–70 (mogą się dogadać).
+5. JEDYNA zawsze brana pod uwagę informacja to odległość — jeśli oboje mają lokalizację i są blisko siebie, to plus.
+6. Obniżaj wynik tylko gdy wypełnione pola PO OBU stronach wyraźnie kolidują (np. muzyk chce grać metal, lokal szuka kameralnej muzyki klasycznej).
+7. Uzasadnienie: 1 zdanie po polsku, opisz co wpłynęło na wynik (lub napisz "Brak sprzeczności, możliwa współpraca").
 
-Zwróć WYŁĄCZNIE tablicę JSON (bez markdown, bez komentarzy, bez dodatkowego tekstu):
+Zwróć WYŁĄCZNIE tablicę JSON (bez markdown, bez komentarzy):
 [{"user_id":"...","score":75,"justification":"..."},...]`;
 }
 
 function buildBatchVenuePrompt(venue: VenueProfile, musicians: MusicianProfile[]): string {
-  const venueDesc = describeVenueShort(venue) || "Brak danych lokalu";
+  const venueDesc = describeVenueShort(venue) || "Brak danych";
   const musicianList = musicians
-    .map((m, i) => `[${i}] user_id="${m.user_id}" | ${describeMusicianShort(m) || "Brak danych muzyka"}`)
+    .map((m, i) => `[${i}] user_id="${m.user_id}" | ${describeMusicianShort(m) || "Brak danych"}`)
     .join("\n");
 
-  return `Jesteś ekspertem od doboru muzyki na żywo do lokali gastronomicznych i eventowych.
+  return `Jesteś ekspertem od kojarzenia muzyków z lokalami.
 
 PROFIL LOKALU:
 ${venueDesc}
 
-MUZYCY DO OCENY (oceń każdego):
+MUZYCY DO OCENY:
 ${musicianList}
 
-ZASADY OCENIANIA (ważne!):
-1. Skala 0–100. Próg dopasowania = 50.
-2. DRASTYCZNA rozbieżność (np. stawka muzyka >3× budżet lokalu, zupełnie sprzeczne style muzyczne) → wynik 0–25, WYKLUCZA dopasowanie.
-3. Pole puste po OBU stronach → pomiń ten element, nie karaj.
-4. Pole wypełnione tylko PO JEDNEJ stronie → małe obniżenie (−5 do −10 pkt), NIE wyklucza.
-5. Uzasadnienie: 1–2 zdania po polsku, konkretnie dlaczego taki wynik.
+ZASADY (przestrzegaj ściśle):
+1. Skala 0–100. Wyniki poniżej 50 oznaczają brak dopasowania.
+2. PUSTE POLE po którejkolwiek lub obu stronach = POMIŃ ten element całkowicie, nie obniżaj wyniku.
+3. Oceniaj TYLKO pola, które są wypełnione po OBU stronach — porównuj je i sprawdzaj zgodność.
+4. Jeśli oba profile mają mało danych (lub żadnych) ale brak jawnych sprzeczności → wynik 60–70 (mogą się dogadać).
+5. JEDYNA zawsze brana pod uwagę informacja to odległość — jeśli oboje mają lokalizację i są blisko siebie, to plus.
+6. Obniżaj wynik tylko gdy wypełnione pola PO OBU stronach wyraźnie kolidują (np. muzyk chce grać metal, lokal szuka kameralnej muzyki klasycznej).
+7. Uzasadnienie: 1 zdanie po polsku, opisz co wpłynęło na wynik (lub napisz "Brak sprzeczności, możliwa współpraca").
 
-Zwróć WYŁĄCZNIE tablicę JSON (bez markdown, bez komentarzy, bez dodatkowego tekstu):
+Zwróć WYŁĄCZNIE tablicę JSON (bez markdown, bez komentarzy):
 [{"user_id":"...","score":75,"justification":"..."},...]`;
 }
 
@@ -110,8 +114,8 @@ Zwróć WYŁĄCZNIE tablicę JSON (bez markdown, bez komentarzy, bez dodatkowego
 function buildSinglePrompt(musician: MusicianProfile, venue: VenueProfile): string {
   const m = describeMusicianShort(musician) || "Brak danych";
   const v = describeVenueShort(venue) || "Brak danych";
-  return `Oceń dopasowanie muzyka do lokalu. Zwróć JSON bez markdown:
-{"score":<0-100>,"justification":"<2 zdania po polsku>"}
+  return `Oceń dopasowanie muzyka do lokalu. Puste pola pomijaj — nie obniżaj za nie wyniku. Jeśli brak sprzeczności → wynik 60+. Zwróć JSON bez markdown:
+{"score":<0-100>,"justification":"<1 zdanie po polsku>"}
 
 Muzyk: ${m}
 Lokal: ${v}`;
