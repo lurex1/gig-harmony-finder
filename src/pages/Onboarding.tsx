@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/select'
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/lib/supabase'
-import { LocationPicker, type LocationResult } from '@/components/LocationPicker'
+import { LocationDetector } from '@/components/LocationDetector'
 
 const GENRES = [
   'Jazz', 'Blues', 'Rock', 'Pop', 'Klasyczna', 'Folk', 'Country', 'R&B/Soul',
@@ -93,8 +93,7 @@ export default function Onboarding() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Shared
-  const [location, setLocation] = useState('')
+  // Shared — lokalizacja z LocationDetector
   const [lat, setLat] = useState<number | null>(null)
   const [lng, setLng] = useState<number | null>(null)
 
@@ -111,10 +110,9 @@ export default function Onboarding() {
   const [occasion, setOccasion] = useState('')
   const [expectations, setExpectations] = useState('')
 
-  const handleLocationSelect = (result: LocationResult) => {
-    setLocation(result.address)
-    setLat(result.lat)
-    setLng(result.lng)
+  const handleLocationChange = (newLat: number, newLng: number) => {
+    setLat(newLat)
+    setLng(newLng)
   }
 
   useEffect(() => {
@@ -153,7 +151,6 @@ export default function Onboarding() {
           instruments,
           hourly_rate: hourlyRate ? parseFloat(hourlyRate) : null,
           bio: bio || null,
-          location: location || null,
           lat: lat ?? null,
           lng: lng ?? null,
         },
@@ -180,7 +177,6 @@ export default function Onboarding() {
           atmosphere: atmosphere || null,
           occasion: occasion || null,
           expectations: expectations || null,
-          location: location || null,
           lat: lat ?? null,
           lng: lng ?? null,
         },
@@ -328,18 +324,13 @@ export default function Onboarding() {
                     />
                   </div>
 
-                  {/* Lokalizacja — Places Autocomplete, zwraca lat/lng bez Geocoding API */}
+                  {/* Lokalizacja */}
                   <div className="space-y-2">
                     <Label>Twoja lokalizacja</Label>
-                    <LocationPicker
-                      value={location}
-                      placeholder="np. Warszawa, Kraków, ul. Floriańska 1..."
-                      onSelect={handleLocationSelect}
-                      onRawChange={setLocation}
+                    <LocationDetector
+                      onChange={handleLocationChange}
+                      hint="Potrzebne do wyświetlenia Cię na mapie i obliczania odległości od lokali."
                     />
-                    <p className="text-xs text-muted-foreground">
-                      Potrzebne do wyświetlenia Cię na mapie i obliczenia odległości od lokali.
-                    </p>
                   </div>
                 </motion.div>
               ) : (
@@ -349,18 +340,13 @@ export default function Onboarding() {
                   animate={{ opacity: 1, x: 0 }}
                   className="space-y-4"
                 >
-                  {/* Lokalizacja — Places Autocomplete, zwraca lat/lng bez Geocoding API */}
+                  {/* Lokalizacja */}
                   <div className="space-y-2">
-                    <Label>Adres lokalu</Label>
-                    <LocationPicker
-                      value={location}
-                      placeholder="np. ul. Nowy Świat 15, Warszawa..."
-                      onSelect={handleLocationSelect}
-                      onRawChange={setLocation}
+                    <Label>Lokalizacja lokalu</Label>
+                    <LocationDetector
+                      onChange={handleLocationChange}
+                      hint="Potrzebne do wyświetlenia lokalu na mapie dla muzyków."
                     />
-                    <p className="text-xs text-muted-foreground">
-                      Potrzebne do wyświetlenia lokalu na mapie dla muzyków.
-                    </p>
                   </div>
 
                   <div className="space-y-2">
