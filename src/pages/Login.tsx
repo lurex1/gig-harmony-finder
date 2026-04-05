@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Music } from "lucide-react";
+import { Music, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
@@ -17,6 +17,8 @@ const Login = () => {
   const { t } = useTranslation();
   const { signIn } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const passwordChanged = searchParams.get('message') === 'password_changed';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,13 +61,25 @@ const Login = () => {
           <h1 className="font-display text-2xl font-bold text-foreground mb-2">{t('login.welcome')}</h1>
           <p className="text-muted-foreground text-sm mb-6">{t('login.subtitle')}</p>
 
+          {passwordChanged && (
+            <div className="flex items-start gap-2.5 p-3 rounded-lg bg-emerald-50 border border-emerald-200 mb-4">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
+              <p className="text-sm text-emerald-700">{t('login.passwordChanged')}</p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">{t('login.email')}</Label>
               <Input id="email" type="email" placeholder="ty@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">{t('login.password')}</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">{t('login.password')}</Label>
+                <Link to="/forgot-password" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+                  {t('login.forgotPassword')}
+                </Link>
+              </div>
               <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
             </div>
 

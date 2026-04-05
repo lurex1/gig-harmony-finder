@@ -7,6 +7,8 @@ import { AuthProvider } from "@/components/AuthProvider";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import MusicianDashboard from "./pages/MusicianDashboard";
 import VenueDashboard from "./pages/VenueDashboard";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -28,6 +30,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/musician" element={<MusicianDashboard />} />
             <Route path="/venue" element={<VenueDashboard />} />
             <Route path="/onboarding" element={<Onboarding />} />

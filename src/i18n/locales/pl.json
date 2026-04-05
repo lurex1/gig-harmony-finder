@@ -97,7 +97,30 @@
     "password": "Hasło",
     "submit": "Zaloguj się",
     "noAccount": "Nie masz konta?",
-    "register": "Zarejestruj się"
+    "register": "Zarejestruj się",
+    "forgotPassword": "Zapomniałem hasła",
+    "passwordChanged": "Hasło zostało zmienione pomyślnie. Możesz się teraz zalogować."
+  },
+  "forgotPassword": {
+    "title": "Odzyskaj hasło",
+    "subtitle": "Podaj swój adres email — wyślemy Ci link do zresetowania hasła.",
+    "email": "Email",
+    "submit": "Wyślij link resetujący",
+    "sending": "Wysyłam…",
+    "successTitle": "Sprawdź skrzynkę",
+    "successDesc": "Jeśli konto istnieje, wyślemy link resetujący na podany adres.",
+    "backToLogin": "Wróć do logowania"
+  },
+  "resetPassword": {
+    "title": "Nowe hasło",
+    "subtitle": "Wpisz nowe hasło dla swojego konta.",
+    "newPassword": "Nowe hasło",
+    "confirmPassword": "Powtórz hasło",
+    "submit": "Zmień hasło",
+    "saving": "Zapisuję…",
+    "errorMismatch": "Hasła nie są identyczne.",
+    "errorTooShort": "Hasło musi mieć co najmniej 6 znaków.",
+    "errorInvalid": "Link resetujący wygasł lub jest nieprawidłowy. Poproś o nowy."
   },
   "register": {
     "createAccount": "Stwórz konto",

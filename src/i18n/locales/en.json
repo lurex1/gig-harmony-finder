@@ -97,7 +97,30 @@
     "password": "Password",
     "submit": "Log in",
     "noAccount": "Don't have an account?",
-    "register": "Sign up"
+    "register": "Sign up",
+    "forgotPassword": "Forgot password",
+    "passwordChanged": "Your password has been changed successfully. You can now log in."
+  },
+  "forgotPassword": {
+    "title": "Recover password",
+    "subtitle": "Enter your email address — we'll send you a password reset link.",
+    "email": "Email",
+    "submit": "Send reset link",
+    "sending": "Sending…",
+    "successTitle": "Check your inbox",
+    "successDesc": "If an account exists, we'll send a reset link to that address.",
+    "backToLogin": "Back to login"
+  },
+  "resetPassword": {
+    "title": "New password",
+    "subtitle": "Enter a new password for your account.",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "submit": "Change password",
+    "saving": "Saving…",
+    "errorMismatch": "Passwords do not match.",
+    "errorTooShort": "Password must be at least 6 characters.",
+    "errorInvalid": "The reset link has expired or is invalid. Please request a new one."
   },
   "register": {
     "createAccount": "Create account",
