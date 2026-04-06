@@ -12,8 +12,10 @@ import { useToast } from '@/hooks/use-toast'
 import { useAuth } from '@/hooks/useAuth'
 import { useMatches } from '@/hooks/useMatches'
 import { useChat } from '@/hooks/useChat'
-import { ProposalList } from '@/components/ProposalList'
-import { ChatPanel } from '@/components/ChatPanel'
+import { ProposalList }      from '@/components/ProposalList'
+import { ChatPanel }         from '@/components/ChatPanel'
+import { LocationDetector }  from '@/components/LocationDetector'
+import { reverseGeocode }    from '@/lib/geocode'
 import { supabase } from '@/lib/supabase'
 import { useTranslation } from 'react-i18next'
 
@@ -98,6 +100,13 @@ export default function VenueDashboard() {
   const [appLoading,   setAppLoading]   = useState(false)
   const [acceptingId,  setAcceptingId]  = useState<string | null>(null)
 
+  // Lokalizacja lokalu
+  const [venueLat,      setVenueLat]      = useState<number | null>(null)
+  const [venueLng,      setVenueLng]      = useState<number | null>(null)
+  const [venueLocName,  setVenueLocName]  = useState<string | null>(null)
+  const [locSaving,     setLocSaving]     = useState(false)
+  const [locSaved,      setLocSaved]      = useState(false)
+
   const { matches, loading: matchLoading, error: matchError, hasProfile, refresh } = useMatches('venue')
   const chat = useChat('venue')
 
@@ -105,7 +114,7 @@ export default function VenueDashboard() {
     if (!user) return
     Promise.all([
       supabase.from('profiles').select('name').eq('user_id', user.id).single(),
-      supabase.from('venue_profiles').select('venue_name, venue_type, location').eq('user_id', user.id).maybeSingle(),
+      supabase.from('venue_profiles').select('venue_name, venue_type, location, lat, lng').eq('user_id', user.id).maybeSingle(),
     ]).then(([profileRes, vpRes]) => {
       setMyProfile({
         name:       profileRes.data?.name ?? '—',
@@ -113,6 +122,9 @@ export default function VenueDashboard() {
         venue_type: vpRes.data?.venue_type ?? null,
         location:   vpRes.data?.location ?? null,
       })
+      if (vpRes.data?.lat) setVenueLat(vpRes.data.lat)
+      if (vpRes.data?.lng) setVenueLng(vpRes.data.lng)
+      if (vpRes.data?.location) setVenueLocName(vpRes.data.location)
       setProfileLoading(false)
     })
   }, [user])
@@ -525,16 +537,85 @@ export default function VenueDashboard() {
 
                 {/* ── profile ── */}
                 {activeView === 'profile' && (
-                  <div className="bg-white rounded-2xl p-6" style={{ boxShadow: '0 0 20px rgba(0,0,0,0.08)' }}>
-                    <p className="text-gray-500 text-sm mb-4">{t('venueDashNew.profileDesc')}</p>
-                    <Link to="/onboarding">
+                  <div className="space-y-4">
+                    {/* Karta lokalizacji */}
+                    <div className="bg-white rounded-2xl p-6" style={{ boxShadow: '0 0 20px rgba(0,0,0,0.08)' }}>
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
+                          <MapPin className="w-4 h-4 text-indigo-500" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-gray-900">Lokalizacja lokalu</p>
+                          <p className="text-xs text-gray-500">
+                            {venueLocName ?? 'Nie ustawiono'}
+                          </p>
+                        </div>
+                      </div>
+
+                      {venueLocName && (
+                        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 text-sm mb-4">
+                          <MapPin className="w-4 h-4 text-indigo-500 shrink-0" />
+                          <span className="font-medium text-gray-900">{venueLocName}</span>
+                        </div>
+                      )}
+
+                      <LocationDetector
+                        hint="Lokalizacja lokalu jest widoczna na mapie dla muzyków."
+                        onChange={async (lat, lng) => {
+                          setVenueLat(lat)
+                          setVenueLng(lng)
+                          const name = await reverseGeocode(lat, lng)
+                          setVenueLocName(name)
+                        }}
+                      />
+
                       <button
-                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white shadow-md hover:opacity-90 transition-opacity"
+                        type="button"
+                        disabled={venueLat === null || locSaving}
+                        onClick={async () => {
+                          if (!venueLat || !venueLng || !user) return
+                          setLocSaving(true)
+                          const { error } = await supabase
+                            .from('venue_profiles')
+                            .upsert(
+                              { user_id: user.id, lat: venueLat, lng: venueLng, location: venueLocName ?? null },
+                              { onConflict: 'user_id' }
+                            )
+                          setLocSaving(false)
+                          if (error) {
+                            toast({ title: 'Błąd zapisu', description: error.message, variant: 'destructive' })
+                          } else {
+                            setLocSaved(true)
+                            setMyProfile(p => p ? { ...p, location: venueLocName } : p)
+                            setTimeout(() => setLocSaved(false), 2500)
+                          }
+                        }}
+                        className="mt-4 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-opacity hover:opacity-90"
                         style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)' }}
                       >
-                        {t('venueDashNew.editPreferences')}
+                        {locSaving ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : locSaved ? (
+                          <CheckCircle2 className="w-3.5 h-3.5 text-green-300" />
+                        ) : (
+                          <MapPin className="w-3.5 h-3.5" />
+                        )}
+                        {locSaving ? 'Zapisuję…' : locSaved ? 'Zapisano!' : 'Zapisz lokalizację'}
                       </button>
-                    </Link>
+                    </div>
+
+                    {/* Link do pełnego onboardingu */}
+                    <div className="bg-white rounded-2xl p-6" style={{ boxShadow: '0 0 20px rgba(0,0,0,0.08)' }}>
+                      <p className="text-gray-500 text-sm mb-4">{t('venueDashNew.profileDesc')}</p>
+                      <Link to="/onboarding">
+                        <button
+                          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white shadow-md hover:opacity-90 transition-opacity"
+                          style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)' }}
+                        >
+                          {t('venueDashNew.editPreferences')}
+                        </button>
+                      </Link>
+                    </div>
                   </div>
                 )}
 

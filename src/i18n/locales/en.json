@@ -270,7 +270,13 @@
     "saveSection": "Save section",
     "saving": "Saving…",
     "saved": "Saved!",
-    "saveError": "Save error"
+    "saveError": "Save error",
+    "locationTitle": "Location",
+    "locationDesc": "Your city and range",
+    "locationCurrent": "Current location",
+    "locationNotSet": "Not set",
+    "locationSave": "Save location",
+    "locationHint": "Your location is visible on the map to venues when you are available."
   },
   "venueDashNew": {
     "findMusiciansTitle": "AI Matches",

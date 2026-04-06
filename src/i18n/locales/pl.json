@@ -270,7 +270,13 @@
     "saveSection": "Zapisz sekcję",
     "saving": "Zapisuję…",
     "saved": "Zapisano!",
-    "saveError": "Błąd zapisu"
+    "saveError": "Błąd zapisu",
+    "locationTitle": "Lokalizacja",
+    "locationDesc": "Twoje miasto i zasięg",
+    "locationCurrent": "Aktualna lokalizacja",
+    "locationNotSet": "Nie ustawiono",
+    "locationSave": "Zapisz lokalizację",
+    "locationHint": "Lokalizacja jest widoczna na mapie dla lokali, gdy jesteś dostępny."
   },
   "venueDashNew": {
     "findMusiciansTitle": "Dopasowania AI",

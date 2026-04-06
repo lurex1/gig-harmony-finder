@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import {
   User, Music2, Building2, Banknote, CalendarDays,
-  CheckCircle2, Loader2,
+  CheckCircle2, Loader2, MapPin,
 } from 'lucide-react'
 import {
   Accordion, AccordionItem, AccordionTrigger, AccordionContent,
@@ -12,7 +12,9 @@ import { Label }    from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Slider }   from '@/components/ui/slider'
 import { Switch }   from '@/components/ui/switch'
-import { AvatarUpload } from '@/components/AvatarUpload'
+import { AvatarUpload }      from '@/components/AvatarUpload'
+import { LocationDetector }  from '@/components/LocationDetector'
+import { reverseGeocode }    from '@/lib/geocode'
 import { supabase } from '@/lib/supabase'
 import { useToast } from '@/hooks/use-toast'
 import { useTranslation } from 'react-i18next'
@@ -171,6 +173,11 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
   const [days,   setDays]   = useState<string[]>([])
   const [radius, setRadius] = useState(50)
 
+  // 6. Lokalizacja
+  const [locLat,  setLocLat]  = useState<number | null>(null)
+  const [locLng,  setLocLng]  = useState<number | null>(null)
+  const [locName, setLocName] = useState<string | null>(null)
+
   // ── Load ──────────────────────────────────────────────────────────────────
   useEffect(() => {
     if (!userId) return
@@ -192,6 +199,9 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
         setRateMax((mp as Record<string,unknown>).hourly_rate_max as number ?? 500)
         setProBono((mp as Record<string,unknown>).pro_bono as boolean ?? false)
         setRadius((mp as Record<string,unknown>).radius as number ?? 50)
+        setLocLat((mp as Record<string,unknown>).lat as number ?? null)
+        setLocLng((mp as Record<string,unknown>).lng as number ?? null)
+        setLocName((mp as Record<string,unknown>).location as string ?? null)
       }
       setLoading(false)
     })
@@ -516,6 +526,69 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
 
             <SaveBtn loading={saving['availability']} saved={saved['availability']} />
           </form>
+        </AccordionContent>
+      </AccordionItem>
+
+      {/* ── 6. Lokalizacja ────────────────────────────────────────────────── */}
+      <AccordionItem value="location" className="border border-border rounded-xl px-5 overflow-hidden">
+        <AccordionTrigger className="hover:no-underline py-4">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center">
+              <MapPin className="w-4 h-4 text-foreground" />
+            </div>
+            <div className="text-left">
+              <p className="text-sm font-semibold text-foreground">{t('musicianProfile.locationTitle')}</p>
+              <p className="text-xs text-muted-foreground">
+                {locName ?? t('musicianProfile.locationNotSet')}
+              </p>
+            </div>
+          </div>
+        </AccordionTrigger>
+        <AccordionContent>
+          <div className="space-y-4 pb-2">
+            {locName && (
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-secondary text-sm">
+                <MapPin className="w-4 h-4 text-indigo-500 shrink-0" />
+                <span className="font-medium text-foreground">{locName}</span>
+              </div>
+            )}
+
+            <LocationDetector
+              hint={t('musicianProfile.locationHint')}
+              onChange={async (lat, lng) => {
+                setLocLat(lat)
+                setLocLng(lng)
+                const name = await reverseGeocode(lat, lng)
+                setLocName(name)
+              }}
+            />
+
+            <Button
+              type="button"
+              variant="pill"
+              size="sm"
+              disabled={locLat === null || saving['location']}
+              onClick={async () => {
+                if (locLat === null || locLng === null) return
+                await saveSection('location', {
+                  lat: locLat,
+                  lng: locLng,
+                  location: locName ?? null,
+                })
+              }}
+            >
+              {saving['location'] ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
+              ) : saved['location'] ? (
+                <CheckCircle2 className="w-3.5 h-3.5 mr-1.5 text-green-500" />
+              ) : null}
+              {saving['location']
+                ? t('musicianProfile.saving')
+                : saved['location']
+                ? t('musicianProfile.saved')
+                : t('musicianProfile.locationSave')}
+            </Button>
+          </div>
         </AccordionContent>
       </AccordionItem>
 
