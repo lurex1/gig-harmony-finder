@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Music, Zap, MessageSquare, CalendarDays, User2, LogOut,
+  Music, Zap, MessageSquare, MapPin, User2, LogOut,
   Loader2, Menu, X,
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { useAuth } from '@/hooks/useAuth'
 import { useMatches } from '@/hooks/useMatches'
@@ -14,10 +13,12 @@ import { ProposalList } from '@/components/ProposalList'
 import { ChatPanel } from '@/components/ChatPanel'
 import { AvatarUpload } from '@/components/AvatarUpload'
 import { MusicianProfileEditor } from '@/components/MusicianProfileEditor'
+import MapView from '@/components/MapView'
 import { supabase } from '@/lib/supabase'
+import { useToast } from '@/hooks/use-toast'
 import { useTranslation } from 'react-i18next'
 
-type View = 'proposals' | 'chat' | 'calendar' | 'profile'
+type View = 'proposals' | 'chat' | 'gigs' | 'profile'
 
 interface SidebarProfile {
   name: string
@@ -25,24 +26,17 @@ interface SidebarProfile {
   avatarUrl: string | null
 }
 
-// ─── Nav items are built inside component (need translations) ─────────────────
 const NAV_ICONS: { icon: React.ElementType; view: View }[] = [
   { icon: Zap,           view: 'proposals' },
   { icon: MessageSquare, view: 'chat' },
-  { icon: CalendarDays,  view: 'calendar' },
+  { icon: MapPin,        view: 'gigs' },
   { icon: User2,         view: 'profile' },
 ]
 
 // ─── Sidebar ─────────────────────────────────────────────────────────────────
 function Sidebar({
-  profile,
-  userId,
-  activeView,
-  chatCount,
-  onNav,
-  onSignOut,
-  onAvatarChange,
-  onNameChange,
+  profile, userId, activeView, chatCount,
+  onNav, onSignOut, onAvatarChange, onNameChange,
 }: {
   profile: SidebarProfile | null
   userId: string
@@ -56,7 +50,7 @@ function Sidebar({
   const { t } = useTranslation()
   const name     = profile?.name ?? '…'
   const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
-  const genre    = profile?.genres?.slice(0, 2).join(' · ') || t('musicianDashNew.musicianBadge')
+  const genre    = profile?.genres?.slice(0, 2).join(' · ') || ''
 
   const NAV = NAV_ICONS.map(item => ({
     ...item,
@@ -64,11 +58,12 @@ function Sidebar({
   }))
 
   return (
-    <aside className="flex flex-col gap-6">
+    <aside className="flex flex-col gap-5 h-full">
       {/* Profile card */}
-      <div className="rounded-2xl border border-border bg-background p-6">
-        <div className="flex flex-col items-center text-center gap-3">
-          {userId ? (
+      <div className="bg-white rounded-2xl p-6 flex flex-col items-center text-center gap-3"
+           style={{ boxShadow: '0 0 20px rgba(0,0,0,0.08)' }}>
+        {userId ? (
+          <div className="ring-2 ring-offset-2 rounded-full" style={{ ringColor: '#6366f1' }}>
             <AvatarUpload
               userId={userId}
               currentUrl={profile?.avatarUrl ?? null}
@@ -76,46 +71,45 @@ function Sidebar({
               size="lg"
               onUploaded={onAvatarChange}
             />
-          ) : (
-            <Avatar className="w-24 h-24 ring-2 ring-border">
-              <AvatarFallback className="text-2xl font-semibold bg-secondary">
-                {initials}
-              </AvatarFallback>
-            </Avatar>
-          )}
-
-          <div>
-            <h2 className="font-display text-lg font-bold text-foreground leading-tight">{name}</h2>
-            <span className="inline-flex items-center gap-1 mt-1 px-2.5 py-0.5 rounded-full bg-secondary border border-border text-xs font-medium text-muted-foreground">
-              <Music className="w-3 h-3" /> {t('musicianDashNew.musicianBadge')}
-            </span>
-            {profile?.genres?.length ? (
-              <p className="text-xs text-muted-foreground mt-1.5">{genre}</p>
-            ) : null}
           </div>
+        ) : (
+          <Avatar className="w-20 h-20 ring-2 ring-offset-2" style={{ '--tw-ring-color': '#6366f1' } as React.CSSProperties}>
+            <AvatarFallback className="text-xl font-bold bg-indigo-50 text-indigo-600">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+        )}
+        <div>
+          <h2 className="font-bold text-gray-900 text-base leading-tight">{name}</h2>
+          <p className="text-xs font-semibold mt-0.5" style={{ color: '#6366f1' }}>
+            <Music className="w-3 h-3 inline mr-1" />
+            {t('musicianDashNew.musicianBadge')}
+          </p>
+          {genre && <p className="text-xs text-gray-400 mt-1">{genre}</p>}
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="space-y-1">
+      <nav className="space-y-1 flex-1">
         {NAV.map(item => {
           const active = activeView === item.view
           return (
             <button
               key={item.view}
               onClick={() => onNav(item.view)}
+              style={active ? { background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)' } : {}}
               className={`
                 w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all
                 ${active
-                  ? 'bg-foreground text-background shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}
+                  ? 'text-white shadow-md'
+                  : 'text-gray-500 hover:text-indigo-700 hover:bg-indigo-50'}
               `}
             >
               <item.icon className="w-4 h-4 shrink-0" />
               <span className="flex-1 text-left">{item.label}</span>
               {item.view === 'chat' && chatCount > 0 && (
                 <span className={`text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold
-                  ${active ? 'bg-background text-foreground' : 'bg-foreground text-background'}`}>
+                  ${active ? 'bg-white text-indigo-600' : 'bg-indigo-100 text-indigo-600'}`}>
                   {chatCount}
                 </span>
               )}
@@ -127,7 +121,7 @@ function Sidebar({
       {/* Sign out */}
       <button
         onClick={onSignOut}
-        className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-all mt-auto"
+        className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all"
       >
         <LogOut className="w-4 h-4" />
         {t('musicianDashNew.signOut')}
@@ -141,21 +135,20 @@ export default function MusicianDashboard() {
   const { user, signOut, loading: authLoading } = useAuth()
   const navigate = useNavigate()
 
-  const [activeView,    setActiveView]    = useState<View>('proposals')
-  const [sidebarOpen,   setSidebarOpen]   = useState(false)
-  const [profile,       setProfile]       = useState<SidebarProfile | null>(null)
+  const [activeView,     setActiveView]     = useState<View>('proposals')
+  const [sidebarOpen,    setSidebarOpen]    = useState(false)
+  const [profile,        setProfile]        = useState<SidebarProfile | null>(null)
   const [profileLoading, setProfileLoading] = useState(true)
 
   const { t } = useTranslation()
+  const { toast } = useToast()
   const { matches, loading: matchLoading, error: matchError, hasProfile, refresh } = useMatches('musician')
   const chat = useChat('musician')
 
-  // Auth guard
   useEffect(() => {
     if (!authLoading && !user) navigate('/login')
   }, [user, authLoading, navigate])
 
-  // Load sidebar profile
   useEffect(() => {
     if (!user) return
     Promise.all([
@@ -177,71 +170,82 @@ export default function MusicianDashboard() {
     setSidebarOpen(false)
   }
 
-  const handleSignOut = async () => { await signOut(); navigate('/') }
+  const handleApplyGig = async (gigId: string) => {
+    if (!user) return
+    const { error } = await supabase.from('gig_applications').insert({
+      gig_id: gigId,
+      musician_id: user.id,
+      status: 'pending',
+    })
+    if (error && error.code !== '23505') {
+      toast({ title: t('gigs.applyError'), description: error.message, variant: 'destructive' })
+    } else if (!error) {
+      toast({ title: t('gigs.applySuccess'), description: t('gigs.applySuccessDesc') })
+    } else {
+      toast({ title: t('gigs.alreadyApplied'), variant: 'default' })
+    }
+  }
 
-  const handleNav = (view: View) => { setActiveView(view); setSidebarOpen(false) }
+  const handleSignOut = async () => { await signOut(); navigate('/') }
+  const handleNav     = (view: View) => { setActiveView(view); setSidebarOpen(false) }
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+      <div className="min-h-screen flex items-center justify-center"
+           style={{ background: 'linear-gradient(135deg, #f8f6ff 0%, #f0f4ff 100%)' }}>
+        <Loader2 className="w-6 h-6 animate-spin" style={{ color: '#6366f1' }} />
       </div>
     )
   }
 
   const viewMeta: Record<View, { title: string; desc: string }> = {
-    proposals: {
-      title: t('musicianDashNew.proposalsTitle'),
-      desc:  t('musicianDashNew.proposalsDesc'),
-    },
-    chat: {
-      title: t('musicianDashNew.messagesTitle'),
-      desc:  t('musicianDashNew.messagesDesc'),
-    },
-    calendar: {
-      title: t('musicianDashNew.calendarTitle'),
-      desc:  t('musicianDashNew.calendarDesc'),
-    },
-    profile: {
-      title: t('musicianDashNew.profileTitle'),
-      desc:  t('musicianDashNew.profileDesc'),
-    },
+    proposals: { title: t('musicianDashNew.proposalsTitle'), desc: t('musicianDashNew.proposalsDesc') },
+    chat:      { title: t('musicianDashNew.messagesTitle'),  desc: t('musicianDashNew.messagesDesc') },
+    gigs:      { title: t('musicianDashNew.gigsTitle'),      desc: t('musicianDashNew.gigsDesc') },
+    profile:   { title: t('musicianDashNew.profileTitle'),   desc: t('musicianDashNew.profileDesc') },
+  }
+
+  const sidebarProps = {
+    profile,
+    userId:        user?.id ?? '',
+    activeView,
+    chatCount:     chat.conversations.length,
+    onNav:         handleNav,
+    onSignOut:     handleSignOut,
+    onAvatarChange: (url: string) => setProfile(p => p ? { ...p, avatarUrl: url } : p),
+    onNameChange:   (name: string) => setProfile(p => p ? { ...p, name } : p),
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f8f6ff 0%, #f0f4ff 100%)' }}>
 
-      {/* ── Top navbar ───────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur border-b border-border">
+      {/* ── Navbar ───────────────────────────────────────────────────────── */}
+      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-gray-100">
         <div className="container mx-auto px-4 h-14 flex items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <Music className="w-5 h-5 text-foreground" />
-            <span className="font-display text-lg font-bold text-foreground">GigMatch</span>
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+                 style={{ background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)' }}>
+              <Music className="w-4 h-4 text-white" />
+            </div>
+            <span className="font-bold text-gray-900 text-lg">GigMatch</span>
           </Link>
 
-          {/* Mobile: current view title */}
-          <span className="lg:hidden text-sm font-medium text-foreground">
+          <span className="lg:hidden text-sm font-semibold text-gray-700">
             {viewMeta[activeView].title}
           </span>
 
           <div className="flex items-center gap-2">
-            {/* Desktop: avatar mini */}
-            <div className="hidden lg:flex items-center gap-2.5 text-sm text-muted-foreground">
+            <div className="hidden lg:flex items-center gap-2 text-sm text-gray-500">
               <Avatar className="w-7 h-7">
-                {profile?.avatarUrl
-                  ? <AvatarImage src={profile.avatarUrl} />
-                  : null
-                }
-                <AvatarFallback className="text-xs bg-secondary">
+                {profile?.avatarUrl ? <AvatarImage src={profile.avatarUrl} /> : null}
+                <AvatarFallback className="text-xs bg-indigo-100 text-indigo-600 font-semibold">
                   {profile?.name?.split(' ').map(w => w[0]).join('').slice(0, 2) ?? '?'}
                 </AvatarFallback>
               </Avatar>
               <span className="hidden xl:block">{profile?.name}</span>
             </div>
-
-            {/* Mobile: hamburger */}
             <button
-              className="lg:hidden p-2 rounded-lg hover:bg-secondary transition-colors"
+              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
               onClick={() => setSidebarOpen(o => !o)}
             >
               {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -262,20 +266,10 @@ export default function MusicianDashboard() {
             <motion.div
               initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-              className="lg:hidden fixed top-14 left-0 bottom-0 w-72 bg-background border-r border-border z-40 overflow-y-auto p-4"
+              className="lg:hidden fixed top-14 left-0 bottom-0 w-72 z-40 overflow-y-auto p-4"
+              style={{ background: 'linear-gradient(135deg, #f8f6ff 0%, #f0f4ff 100%)' }}
             >
-              {!profileLoading && (
-                <Sidebar
-                  profile={profile}
-                  userId={user?.id ?? ''}
-                  activeView={activeView}
-                  chatCount={chat.conversations.length}
-                  onNav={handleNav}
-                  onSignOut={handleSignOut}
-                  onAvatarChange={url => setProfile(p => p ? { ...p, avatarUrl: url } : p)}
-                  onNameChange={name => setProfile(p => p ? { ...p, name } : p)}
-                />
-              )}
+              {!profileLoading && <Sidebar {...sidebarProps} />}
             </motion.div>
           </>
         )}
@@ -283,22 +277,13 @@ export default function MusicianDashboard() {
 
       {/* ── Layout ───────────────────────────────────────────────────────── */}
       <div className="container mx-auto px-4 py-6 lg:py-8">
-        <div className="flex gap-8">
+        <div className="flex gap-6">
 
           {/* Desktop sidebar */}
-          <div className="hidden lg:flex lg:w-60 xl:w-64 shrink-0 flex-col">
+          <div className="hidden lg:block lg:w-60 xl:w-64 shrink-0">
             {!profileLoading && (
               <div className="sticky top-[5.5rem]">
-                <Sidebar
-                  profile={profile}
-                  userId={user?.id ?? ''}
-                  activeView={activeView}
-                  chatCount={chat.conversations.length}
-                  onNav={handleNav}
-                  onSignOut={handleSignOut}
-                  onAvatarChange={url => setProfile(p => p ? { ...p, avatarUrl: url } : p)}
-                  onNameChange={name => setProfile(p => p ? { ...p, name } : p)}
-                />
+                <Sidebar {...sidebarProps} />
               </div>
             )}
           </div>
@@ -313,18 +298,18 @@ export default function MusicianDashboard() {
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.2 }}
               >
-                {/* Page header */}
+                {/* Section header */}
                 <div className="mb-6">
-                  <h1 className="font-display text-2xl font-bold text-foreground">
+                  <h1 className="text-2xl font-bold text-gray-900">
                     {viewMeta[activeView].title}
                   </h1>
-                  <p className="text-muted-foreground text-sm mt-0.5">
-                    {viewMeta[activeView].desc}
-                  </p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="w-8 h-0.5 rounded-full" style={{ background: 'linear-gradient(90deg, #6366f1, #8b5cf6)' }} />
+                    <p className="text-gray-500 text-sm">{viewMeta[activeView].desc}</p>
+                  </div>
                 </div>
 
-                {/* ── Views ─────────────────────────────────────────────── */}
-
+                {/* Views */}
                 {activeView === 'proposals' && (
                   <ProposalList
                     role="musician"
@@ -350,14 +335,8 @@ export default function MusicianDashboard() {
                   />
                 )}
 
-                {activeView === 'calendar' && (
-                  <div className="flex flex-col items-center justify-center py-20 text-center">
-                    <CalendarDays className="w-10 h-10 text-muted-foreground/40 mb-3" />
-                    <p className="font-medium text-foreground mb-1">{t('musicianDashNew.calendarSoon')}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {t('musicianDashNew.calendarSoonDesc')}
-                    </p>
-                  </div>
+                {activeView === 'gigs' && (
+                  <MapView role="musician" onAcceptGig={handleApplyGig} />
                 )}
 
                 {activeView === 'profile' && user && (
