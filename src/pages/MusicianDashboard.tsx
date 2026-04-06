@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Music, Zap, MessageSquare, MapPin, User2, LogOut,
-  Loader2, Menu, X,
+  Menu, X,
 } from 'lucide-react'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { useAuth } from '@/hooks/useAuth'
@@ -132,7 +132,7 @@ function Sidebar({
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export default function MusicianDashboard() {
-  const { user, signOut, loading: authLoading } = useAuth()
+  const { user, signOut } = useAuth()
   const navigate = useNavigate()
 
   const [activeView,     setActiveView]     = useState<View>('proposals')
@@ -144,10 +144,6 @@ export default function MusicianDashboard() {
   const { toast } = useToast()
   const { matches, loading: matchLoading, error: matchError, hasProfile, refresh } = useMatches('musician')
   const chat = useChat('musician')
-
-  useEffect(() => {
-    if (!authLoading && !user) navigate('/login')
-  }, [user, authLoading, navigate])
 
   useEffect(() => {
     if (!user) return
@@ -188,15 +184,6 @@ export default function MusicianDashboard() {
 
   const handleSignOut = async () => { await signOut(); navigate('/') }
   const handleNav     = (view: View) => { setActiveView(view); setSidebarOpen(false) }
-
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center"
-           style={{ background: 'linear-gradient(135deg, #f8f6ff 0%, #f0f4ff 100%)' }}>
-        <Loader2 className="w-6 h-6 animate-spin" style={{ color: '#6366f1' }} />
-      </div>
-    )
-  }
 
   const viewMeta: Record<View, { title: string; desc: string }> = {
     proposals: { title: t('musicianDashNew.proposalsTitle'), desc: t('musicianDashNew.proposalsDesc') },

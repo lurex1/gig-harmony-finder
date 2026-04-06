@@ -77,7 +77,7 @@ function SidebarNav({
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export default function VenueDashboard() {
-  const { user, signOut, loading: authLoading } = useAuth()
+  const { user, signOut } = useAuth()
   const navigate = useNavigate()
   const { toast } = useToast()
   const { t } = useTranslation()
@@ -100,10 +100,6 @@ export default function VenueDashboard() {
 
   const { matches, loading: matchLoading, error: matchError, hasProfile, refresh } = useMatches('venue')
   const chat = useChat('venue')
-
-  useEffect(() => {
-    if (!authLoading && !user) navigate('/login')
-  }, [user, authLoading, navigate])
 
   useEffect(() => {
     if (!user) return
@@ -209,15 +205,6 @@ export default function VenueDashboard() {
 
   const handleSignOut = async () => { await signOut(); navigate('/') }
   const handleNav     = (v: View) => { setActiveView(v); setSidebarOpen(false) }
-
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center"
-           style={{ background: 'linear-gradient(135deg, #f8f6ff 0%, #f0f4ff 100%)' }}>
-        <Loader2 className="w-6 h-6 animate-spin" style={{ color: '#6366f1' }} />
-      </div>
-    )
-  }
 
   const pendingCount = applications.filter(a => a.status === 'pending').length
   const displayName  = myProfile?.venue_name ?? '…'

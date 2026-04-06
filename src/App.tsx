@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/components/AuthProvider";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -32,8 +33,8 @@ const App = () => (
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/musician" element={<MusicianDashboard />} />
-            <Route path="/venue" element={<VenueDashboard />} />
+            <Route path="/musician" element={<ProtectedRoute requiredRole="musician"><MusicianDashboard /></ProtectedRoute>} />
+            <Route path="/venue" element={<ProtectedRoute requiredRole="venue"><VenueDashboard /></ProtectedRoute>} />
             <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<Terms />} />

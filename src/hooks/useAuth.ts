@@ -7,6 +7,7 @@ type UserRole = 'musician' | 'venue'
 interface AuthContextType {
   user: User | null
   session: Session | null
+  role: UserRole | null
   loading: boolean
   signIn: (email: string, password: string) => Promise<{ error: string | null }>
   signUp: (
@@ -28,6 +29,8 @@ export function useAuthState(): AuthContextType {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
+
+  const role = (user?.user_metadata?.role ?? null) as UserRole | null
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -98,9 +101,10 @@ export function useAuthState(): AuthContextType {
 
   const signOut = async () => {
     await supabase.auth.signOut()
+    localStorage.clear()
   }
 
-  return { user, session, loading, signIn, signUp, signOut }
+  return { user, session, role, loading, signIn, signUp, signOut }
 }
 
 export function useAuth(): AuthContextType {
