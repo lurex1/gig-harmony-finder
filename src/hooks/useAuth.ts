@@ -15,7 +15,7 @@ interface AuthContextType {
     password: string,
     name: string,
     role: UserRole
-  ) => Promise<{ error: string | null }>
+  ) => Promise<{ error: string | null; emailSent: boolean }>
   signOut: () => Promise<void>
 }
 
@@ -63,7 +63,7 @@ export function useAuthState(): AuthContextType {
     password: string,
     name: string,
     role: UserRole
-  ): Promise<{ error: string | null }> => {
+  ): Promise<{ error: string | null; emailSent: boolean }> => {
     // Pass name/role as metadata so a DB trigger can create the profile even
     // when email confirmation is required (session is null at this point).
     const { data, error } = await supabase.auth.signUp({
@@ -72,8 +72,8 @@ export function useAuthState(): AuthContextType {
       options: { data: { name, role } },
     })
 
-    if (error) return { error: error.message }
-    if (!data.user) return { error: 'Rejestracja nie powiodła się. Spróbuj ponownie.' }
+    if (error) return { error: error.message, emailSent: false }
+    if (!data.user) return { error: 'Rejestracja nie powiodła się. Spróbuj ponownie.', emailSent: false }
 
     // When email confirmation is disabled Supabase returns a live session
     // immediately — try the insert now. If email confirmation is enabled the
@@ -86,17 +86,20 @@ export function useAuthState(): AuthContextType {
         name,
         role,
       })
-      if (profileError) return { error: profileError.message }
+      if (profileError) return { error: profileError.message, emailSent: false }
 
       const { error: subError } = await supabase.from('subscriptions').insert({
         user_id: data.user.id,
         plan: role,
         status: 'trial',
       })
-      if (subError) return { error: subError.message }
+      if (subError) return { error: subError.message, emailSent: false }
+
+      return { error: null, emailSent: false }
     }
 
-    return { error: null }
+    // No session = email confirmation required
+    return { error: null, emailSent: true }
   }
 
   const signOut = async () => {

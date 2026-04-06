@@ -138,8 +138,16 @@
     "startFree": "Rozpocznij za darmo",
     "trialInfoMusician": "7 dni za darmo, potem $1.99/miesiąc. Anuluj kiedy chcesz.",
     "trialInfoVenue": "7 dni za darmo, potem $3.99/miesiąc. Anuluj kiedy chcesz.",
+    "confirmPassword": "Powtórz hasło",
+    "passwordHint": "Min. 8 znaków, przynajmniej jedna litera i cyfra",
+    "passwordError": "Hasło musi mieć min. 8 znaków, zawierać przynajmniej jedną literę i jedną cyfrę",
+    "passwordMismatch": "Hasła nie są zgodne",
     "hasAccount": "Masz już konto?",
-    "login": "Zaloguj się"
+    "login": "Zaloguj się",
+    "emailSentTitle": "Sprawdź skrzynkę email",
+    "emailSentDesc": "Sprawdź swoją skrzynkę email i kliknij link aktywacyjny aby dokończyć rejestrację.",
+    "emailSentSpam": "Nie widzisz wiadomości? Sprawdź folder spam.",
+    "backToLogin": "Przejdź do logowania"
   },
   "musicianDash": {
     "availableNow": "Dostępny teraz",

@@ -17,7 +17,7 @@ begin
   values (
     new.id,
     coalesce(new.raw_user_meta_data->>'name', ''),
-    coalesce(new.raw_user_meta_data->>'role', 'musician')
+    coalesce(new.raw_user_meta_data->>'role', 'musician')::user_role
   )
   on conflict (user_id) do nothing;
 
@@ -25,8 +25,8 @@ begin
   insert into public.subscriptions (user_id, plan, status)
   values (
     new.id,
-    coalesce(new.raw_user_meta_data->>'role', 'musician'),
-    'trial'
+    coalesce(new.raw_user_meta_data->>'role', 'musician')::subscription_plan,
+    'trial'::subscription_status
   )
   on conflict (user_id) do nothing;
 

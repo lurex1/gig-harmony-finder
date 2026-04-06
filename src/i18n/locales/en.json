@@ -138,8 +138,16 @@
     "startFree": "Start for free",
     "trialInfoMusician": "7 days free, then $1.99/month. Cancel anytime.",
     "trialInfoVenue": "7 days free, then $3.99/month. Cancel anytime.",
+    "confirmPassword": "Confirm password",
+    "passwordHint": "Min. 8 characters, at least one letter and one digit",
+    "passwordError": "Password must be at least 8 characters and contain at least one letter and one digit",
+    "passwordMismatch": "Passwords do not match",
     "hasAccount": "Already have an account?",
-    "login": "Log in"
+    "login": "Log in",
+    "emailSentTitle": "Check your email",
+    "emailSentDesc": "Check your inbox and click the activation link to complete your registration.",
+    "emailSentSpam": "Can't find it? Check your spam folder.",
+    "backToLogin": "Go to login"
   },
   "musicianDash": {
     "availableNow": "Available now",
