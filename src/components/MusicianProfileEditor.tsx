@@ -69,8 +69,8 @@ function TagPicker({
           key={item} type="button" onClick={() => toggle(item)}
           className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
             selected.includes(item)
-              ? 'bg-foreground text-background border-foreground'
-              : 'bg-background text-muted-foreground border-border hover:border-foreground/40'
+              ? 'bg-gradient-to-r from-indigo-500 to-violet-500 text-white border-indigo-500'
+              : 'bg-background text-muted-foreground border-border hover:border-indigo-300'
           }`}
         >{item}</button>
       ))}
@@ -88,8 +88,8 @@ function RadioGroup({
           key={opt.value} type="button" onClick={() => onChange(opt.value)}
           className={`px-3 py-2 rounded-lg text-xs font-medium border transition-all ${
             value === opt.value
-              ? 'bg-foreground text-background border-foreground'
-              : 'bg-background text-muted-foreground border-border hover:border-foreground/40'
+              ? 'bg-gradient-to-r from-indigo-500 to-violet-500 text-white border-indigo-500'
+              : 'bg-background text-muted-foreground border-border hover:border-indigo-300'
           }`}
         >{opt.label}</button>
       ))}
@@ -109,8 +109,8 @@ function CheckGroup({
           key={opt.value} type="button" onClick={() => toggle(opt.value)}
           className={`px-3 py-2 rounded-lg text-xs font-medium border transition-all ${
             selected.includes(opt.value)
-              ? 'bg-foreground text-background border-foreground'
-              : 'bg-background text-muted-foreground border-border hover:border-foreground/40'
+              ? 'bg-gradient-to-r from-indigo-500 to-violet-500 text-white border-indigo-500'
+              : 'bg-background text-muted-foreground border-border hover:border-indigo-300'
           }`}
         >{opt.label}</button>
       ))}
@@ -490,8 +490,8 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
                     )}
                     className={`flex-1 py-2.5 rounded-lg text-xs font-semibold border transition-all ${
                       days.includes(day.value)
-                        ? 'bg-foreground text-background border-foreground'
-                        : 'bg-background text-muted-foreground border-border hover:border-foreground/40'
+                        ? 'bg-gradient-to-r from-indigo-500 to-violet-500 text-white border-indigo-500'
+                        : 'bg-background text-muted-foreground border-border hover:border-indigo-300'
                     }`}
                   >{day.label}</button>
                 ))}

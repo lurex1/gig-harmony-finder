@@ -73,8 +73,8 @@ function TagSelector({
           onClick={() => toggle(item)}
           className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
             selected.includes(item)
-              ? 'bg-foreground text-background border-foreground'
-              : 'bg-background text-muted-foreground border-border hover:border-foreground/40'
+              ? 'bg-gradient-to-r from-indigo-500 to-violet-500 text-white border-indigo-500'
+              : 'bg-background text-muted-foreground border-border hover:border-indigo-300'
           }`}
         >
           {item}
@@ -302,8 +302,8 @@ export default function Onboarding() {
                           }
                           className={`flex-1 py-2 rounded-lg text-xs font-medium border transition-all ${
                             availableDays.includes(day.value)
-                              ? 'bg-foreground text-background border-foreground'
-                              : 'bg-background text-muted-foreground border-border hover:border-foreground/40'
+                              ? 'bg-gradient-to-r from-indigo-500 to-violet-500 text-white border-indigo-500'
+                              : 'bg-background text-muted-foreground border-border hover:border-indigo-300'
                           }`}
                         >
                           {day.label}
