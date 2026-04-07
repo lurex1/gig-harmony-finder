@@ -154,6 +154,21 @@
     "cookies": "Cookies",
     "allRights": "© {{year}} GigMatch. Todos los derechos reservados."
   },
+  "faq": {
+    "title": "Preguntas frecuentes",
+    "q1": "¿Es GigMatch gratuito?",
+    "a1": "Sí, durante la beta (hasta el 1 de junio de 2026) la app es completamente gratuita. Después de la beta: Músico $4,99/mes, Local $8,99/mes.",
+    "q2": "¿Cómo funciona el matching?",
+    "a2": "Rellenas tu perfil — género, ubicación, presupuesto. El sistema compara tus preferencias con la otra parte y muestra solo los perfiles más compatibles.",
+    "q3": "Soy músico — ¿qué puedo hacer en la app?",
+    "a3": "Crea un perfil, establece tu ubicación y preferencias. El sistema encontrará locales que encajen con tu estilo y presupuesto. Puedes enviar mensajes y concertar actuaciones.",
+    "q4": "Tengo un local — ¿cómo encuentro un músico?",
+    "a4": "Añade el perfil de tu local con preferencias musicales y presupuesto. El sistema te mostrará músicos en tu zona que encajen con tu espacio.",
+    "q5": "¿Necesito dar una tarjeta de crédito?",
+    "a5": "No. Durante la beta, el registro es gratuito sin tarjeta.",
+    "q6": "¿En qué países funciona GigMatch?",
+    "a6": "GigMatch funciona en cualquier lugar — la app está disponible en polaco, inglés, alemán, español y francés."
+  },
   "beta": {
     "notice": "Beta activa hasta el 1 de junio de 2026. Después se requiere suscripción."
   },
