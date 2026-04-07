@@ -1,9 +1,10 @@
 /**
  * LocationDetector
  *
- * Wykrywa lokalizację przez navigator.geolocation.getCurrentPosition,
- * pokazuje mapę Google z przeciągalną pinezką do dokładnego ustawienia.
- * Zwraca lat/lng — zero wywołań Geocoding API.
+ * - Gdy podano initialPosition: od razu pokazuje mapę z pinezką (zoom 15)
+ * - Przycisk "Wykryj" używa GPS z maximumAge: 0 (dokładność ~5–10 m)
+ * - Po wykryciu GPS: reverse geocoding → komunikat "Wykryto: [miasto]."
+ * - Pinezka jest przeciągalna — onChange wywoływany przy każdej zmianie
  */
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -13,20 +14,18 @@ import {
   AdvancedMarker,
   useMap,
 } from '@vis.gl/react-google-maps'
-import { LocateFixed, Loader2, MapPin, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { LocateFixed, Loader2, MapPin, AlertCircle, CheckCircle2, Info } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { reverseGeocode } from '@/lib/geocode'
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string
 const MAP_ID  = import.meta.env.VITE_GOOGLE_MAPS_MAP_ID  as string
-const WARSAW  = { lat: 52.2297, lng: 21.0122 }
 
 type Status = 'idle' | 'detecting' | 'detected' | 'error'
 
 interface Position { lat: number; lng: number }
 
 // ─── MapController ────────────────────────────────────────────────────────────
-// Panuje do nowej pozycji tylko gdy zmieni się "trigger" (nowe kliknięcie Wykryj).
-// Drag pinu NIE resetuje widoku mapy.
 function MapController({ position, trigger }: { position: Position; trigger: number }) {
   const map = useMap()
   const lastTrigger = useRef(-1)
@@ -64,7 +63,6 @@ function DraggablePin({
       onDragEnd={handleDragEnd}
       title="Przeciągnij aby dokładnie ustawić lokalizację"
     >
-      {/* Custom pin */}
       <div className="flex flex-col items-center select-none">
         <div className="w-10 h-10 rounded-full bg-foreground border-2 border-background shadow-lg flex items-center justify-center">
           <MapPin className="w-5 h-5 text-background" />
@@ -78,17 +76,30 @@ function DraggablePin({
 
 // ─── Public component ─────────────────────────────────────────────────────────
 interface LocationDetectorProps {
-  /** Wywoływane przy każdej zmianie pozycji (wykrycie + drag) */
-  onChange: (lat: number, lng: number) => void
-  /** Opcjonalny label nad przyciskiem (do rozróżnienia muzyk / lokal) */
+  /** Wywoływane przy każdej zmianie pozycji. city podawane tylko po wykryciu GPS. */
+  onChange: (lat: number, lng: number, city?: string) => void
+  /** Zapisana wcześniej pozycja (z DB) — mapa startuje od razu w tym miejscu */
+  initialPosition?: { lat: number; lng: number } | null
+  /** Opcjonalny label nad przyciskiem */
   hint?: string
 }
 
-export function LocationDetector({ onChange, hint }: LocationDetectorProps) {
-  const [status, setStatus]             = useState<Status>('idle')
-  const [position, setPosition]         = useState<Position | null>(null)
-  const [errorMsg, setErrorMsg]         = useState('')
+export function LocationDetector({ onChange, initialPosition, hint }: LocationDetectorProps) {
+  const hasInitial = !!(initialPosition?.lat && initialPosition?.lng)
+
+  const [status,        setStatus]        = useState<Status>(hasInitial ? 'detected' : 'idle')
+  const [position,      setPosition]      = useState<Position | null>(initialPosition ?? null)
+  const [errorMsg,      setErrorMsg]      = useState('')
   const [detectTrigger, setDetectTrigger] = useState(0)
+  const [gpsCity,       setGpsCity]       = useState<string | null>(null)
+
+  // Gdy initialPosition ładuje się asynchronicznie (po powrocie do zakładki)
+  useEffect(() => {
+    if (initialPosition?.lat && initialPosition?.lng && status === 'idle') {
+      setPosition({ lat: initialPosition.lat, lng: initialPosition.lng })
+      setStatus('detected')
+    }
+  }, [initialPosition?.lat, initialPosition?.lng])
 
   const detect = () => {
     if (!navigator.geolocation) {
@@ -99,14 +110,19 @@ export function LocationDetector({ onChange, hint }: LocationDetectorProps) {
 
     setStatus('detecting')
     setErrorMsg('')
+    setGpsCity(null)
 
     navigator.geolocation.getCurrentPosition(
-      ({ coords }) => {
+      async ({ coords }) => {
         const pos: Position = { lat: coords.latitude, lng: coords.longitude }
         setPosition(pos)
-        setDetectTrigger(t => t + 1)   // sygnał dla MapController: pan tu
+        setDetectTrigger(t => t + 1)
         setStatus('detected')
-        onChange(pos.lat, pos.lng)
+
+        // Reverse geocoding — pokazuje komunikat po GPS
+        const city = await reverseGeocode(pos.lat, pos.lng)
+        setGpsCity(city)
+        onChange(pos.lat, pos.lng, city)
       },
       (err) => {
         const msgs: Record<number, string> = {
@@ -117,13 +133,14 @@ export function LocationDetector({ onChange, hint }: LocationDetectorProps) {
         setErrorMsg(msgs[err.code] ?? 'Nieznany błąd geolokalizacji.')
         setStatus('error')
       },
-      { timeout: 10_000, enableHighAccuracy: true, maximumAge: 60_000 }
+      { enableHighAccuracy: true, timeout: 10_000, maximumAge: 0 }
     )
   }
 
   const handleDragEnd = useCallback(
     (pos: Position) => {
       setPosition(pos)
+      setGpsCity(null)   // po ręcznym przesunięciu chowamy komunikat GPS
       onChange(pos.lat, pos.lng)
     },
     [onChange]
@@ -132,6 +149,7 @@ export function LocationDetector({ onChange, hint }: LocationDetectorProps) {
   return (
     <APIProvider apiKey={API_KEY}>
       <div className="space-y-3">
+
         {/* Przycisk + status */}
         <div className="flex items-center gap-3 flex-wrap">
           <Button
@@ -149,12 +167,12 @@ export function LocationDetector({ onChange, hint }: LocationDetectorProps) {
             )}
             {status === 'detecting'
               ? 'Wykrywanie…'
-              : status === 'detected'
+              : hasInitial || status === 'detected'
               ? 'Wykryj ponownie'
               : 'Wykryj moją lokalizację'}
           </Button>
 
-          {status === 'detected' && position && (
+          {status === 'detected' && !gpsCity && (
             <span className="flex items-center gap-1 text-xs text-green-600">
               <CheckCircle2 className="w-3.5 h-3.5" />
               Lokalizacja ustawiona
@@ -163,7 +181,7 @@ export function LocationDetector({ onChange, hint }: LocationDetectorProps) {
         </div>
 
         {/* Hint */}
-        {hint && status === 'idle' && (
+        {hint && status === 'idle' && !hasInitial && (
           <p className="text-xs text-muted-foreground">{hint}</p>
         )}
 
@@ -172,6 +190,16 @@ export function LocationDetector({ onChange, hint }: LocationDetectorProps) {
           <div className="flex items-start gap-2 text-xs text-destructive">
             <AlertCircle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
             <span>{errorMsg}</span>
+          </div>
+        )}
+
+        {/* Komunikat po GPS */}
+        {gpsCity && (
+          <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-indigo-50 dark:bg-indigo-950/30 text-xs text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+            <Info className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+            <span>
+              Wykryto: <strong>{gpsCity}</strong>. Przesuń znacznik jeśli potrzeba i zapisz.
+            </span>
           </div>
         )}
 

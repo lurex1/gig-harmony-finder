@@ -15,7 +15,6 @@ import { useChat } from '@/hooks/useChat'
 import { ProposalList }      from '@/components/ProposalList'
 import { ChatPanel }         from '@/components/ChatPanel'
 import { LocationDetector }  from '@/components/LocationDetector'
-import { reverseGeocode }    from '@/lib/geocode'
 import { supabase } from '@/lib/supabase'
 import { useTranslation } from 'react-i18next'
 
@@ -561,11 +560,11 @@ export default function VenueDashboard() {
 
                       <LocationDetector
                         hint="Lokalizacja lokalu jest widoczna na mapie dla muzyków."
-                        onChange={async (lat, lng) => {
+                        initialPosition={venueLat !== null && venueLng !== null ? { lat: venueLat, lng: venueLng } : null}
+                        onChange={(lat, lng, city) => {
                           setVenueLat(lat)
                           setVenueLng(lng)
-                          const name = await reverseGeocode(lat, lng)
-                          setVenueLocName(name)
+                          if (city) setVenueLocName(city)
                         }}
                       />
 

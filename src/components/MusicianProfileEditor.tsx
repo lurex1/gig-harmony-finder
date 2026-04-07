@@ -14,7 +14,6 @@ import { Slider }   from '@/components/ui/slider'
 import { Switch }   from '@/components/ui/switch'
 import { AvatarUpload }      from '@/components/AvatarUpload'
 import { LocationDetector }  from '@/components/LocationDetector'
-import { reverseGeocode }    from '@/lib/geocode'
 import { supabase } from '@/lib/supabase'
 import { useToast } from '@/hooks/use-toast'
 import { useTranslation } from 'react-i18next'
@@ -185,23 +184,30 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
       supabase.from('profiles').select('name').eq('user_id', userId).single(),
       supabase.from('musician_profiles').select('*').eq('user_id', userId).maybeSingle(),
     ]).then(([pRes, mpRes]) => {
-      const mp = mpRes.data
+      const mp = mpRes.data as Record<string, unknown> | null
       setStageName(pRes.data?.name ?? '')
       if (mp) {
-        setAvatarUrl(mp.avatar_url ?? null)
-        setBio(mp.bio ?? '')
-        setGenres(mp.genres ?? [])
-        setInstruments(mp.instruments ?? [])
-        setPerfType(mp.performance_type ?? '')
-        setVenueSizes(mp.venue_size ? mp.venue_size.split(',') : [])
-        setVenueAtm(mp.venue_atmosphere ? mp.venue_atmosphere.split(',') : [])
-        setRateMin(mp.hourly_rate ?? 0)
-        setRateMax((mp as Record<string,unknown>).hourly_rate_max as number ?? 500)
-        setProBono((mp as Record<string,unknown>).pro_bono as boolean ?? false)
-        setRadius((mp as Record<string,unknown>).radius as number ?? 50)
-        setLocLat((mp as Record<string,unknown>).lat as number ?? null)
-        setLocLng((mp as Record<string,unknown>).lng as number ?? null)
-        setLocName((mp as Record<string,unknown>).location as string ?? null)
+        setAvatarUrl((mp.avatar_url as string) ?? null)
+        setBio((mp.bio as string) ?? '')
+        setGenres((mp.genres as string[]) ?? [])
+        setInstruments((mp.instruments as string[]) ?? [])
+        setPerfType((mp.performance_type as string) ?? '')
+        setVenueSizes(mp.venue_size ? (mp.venue_size as string).split(',') : [])
+        setVenueAtm(mp.venue_atmosphere ? (mp.venue_atmosphere as string).split(',') : [])
+        setRateMin((mp.hourly_rate as number) ?? 0)
+        setRateMax((mp.hourly_rate_max as number) ?? 500)
+        setProBono((mp.pro_bono as boolean) ?? false)
+        setRadius((mp.radius as number) ?? 50)
+
+        const lat  = mp.lat  as number | null
+        const lng  = mp.lng  as number | null
+        const loc  = mp.location as string | null
+        console.log('[MusicianProfileEditor] loaded location from DB — lat:', lat, 'lng:', lng, 'location:', loc)
+        setLocLat(lat)
+        setLocLng(lng)
+        setLocName(loc)
+      } else {
+        console.log('[MusicianProfileEditor] no musician_profiles row found for userId:', userId)
       }
       setLoading(false)
     })
@@ -555,11 +561,11 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
 
             <LocationDetector
               hint={t('musicianProfile.locationHint')}
-              onChange={async (lat, lng) => {
+              initialPosition={locLat !== null && locLng !== null ? { lat: locLat, lng: locLng } : null}
+              onChange={(lat, lng, city) => {
                 setLocLat(lat)
                 setLocLng(lng)
-                const name = await reverseGeocode(lat, lng)
-                setLocName(name)
+                if (city) setLocName(city)
               }}
             />
 
@@ -570,11 +576,41 @@ export function MusicianProfileEditor({ userId, onAvatarChange, onNameChange }: 
               disabled={locLat === null || saving['location']}
               onClick={async () => {
                 if (locLat === null || locLng === null) return
-                await saveSection('location', {
-                  lat: locLat,
-                  lng: locLng,
+
+                console.log('[Location] Saving — userId:', userId, 'lat:', locLat, 'lng:', locLng, 'location:', locName)
+
+                setSaving(s => ({ ...s, location: true }))
+
+                const payload = {
+                  user_id:  userId,
+                  lat:      locLat,
+                  lng:      locLng,
                   location: locName ?? null,
-                })
+                }
+                console.log('[Location] Upsert payload:', payload)
+
+                const { data, error } = await supabase
+                  .from('musician_profiles')
+                  .upsert(payload, { onConflict: 'user_id' })
+                  .select('user_id, lat, lng, location')
+                  .single()
+
+                console.log('[Location] Supabase response — data:', data, 'error:', error)
+
+                setSaving(s => ({ ...s, location: false }))
+
+                if (error) {
+                  toast({
+                    title: t('musicianProfile.saveError'),
+                    description: error.message,
+                    variant: 'destructive',
+                  })
+                } else {
+                  flash('location')
+                  toast({
+                    title: `Lokalizacja zapisana: ${locName ?? `${locLat.toFixed(4)}, ${locLng.toFixed(4)}`}`,
+                  })
+                }
               }}
             >
               {saving['location'] ? (
