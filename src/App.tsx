@@ -16,6 +16,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
 import Cookies from "./pages/Cookies";
 import Onboarding from "./pages/Onboarding";
+import AuthCallback from "./pages/AuthCallback";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/musician" element={<ProtectedRoute requiredRole="musician"><MusicianDashboard /></ProtectedRoute>} />
             <Route path="/venue" element={<ProtectedRoute requiredRole="venue"><VenueDashboard /></ProtectedRoute>} />
             <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/cookies" element={<Cookies />} />
