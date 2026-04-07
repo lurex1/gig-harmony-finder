@@ -73,7 +73,7 @@ const Login = () => {
             type="button"
             onClick={() => supabase.auth.signInWithOAuth({
               provider: 'google',
-              options: { redirectTo: window.location.origin + '/auth/callback' },
+              options: { redirectTo: 'https://gigmatch-omega.vercel.app/auth/callback' },
             })}
             className="w-full flex items-center justify-center gap-3 px-4 py-2.5 rounded-xl border border-border bg-background hover:bg-secondary transition-colors text-sm font-medium text-foreground"
           >
