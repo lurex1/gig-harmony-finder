@@ -177,10 +177,13 @@ const Register = () => {
             <div className="space-y-3 mb-4">
               <button
                 type="button"
-                onClick={() => supabase.auth.signInWithOAuth({
-                  provider: 'google',
-                  options: { redirectTo: 'https://gigmatch-omega.vercel.app/auth/callback' },
-                })}
+                onClick={() => {
+                  localStorage.setItem('gigmatch_pending_role', role)
+                  supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: { redirectTo: 'https://gigmatch-omega.vercel.app/auth/callback' },
+                  })
+                }}
                 className="w-full flex items-center justify-center gap-3 px-4 py-2.5 rounded-xl border border-border bg-background hover:bg-secondary transition-colors text-sm font-medium text-foreground"
               >
                 <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" aria-hidden="true">

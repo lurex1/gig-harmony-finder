@@ -26,7 +26,10 @@ const AuthCallback = () => {
 
       const userId = session.user.id
 
-      // Sprawdź czy użytkownik ma rekord w profiles (trigger powinien go utworzyć)
+      // Rola zapisana przed redirectem OAuth (np. "venue" lub "musician")
+      const pendingRole = localStorage.getItem('gigmatch_pending_role') as 'musician' | 'venue' | null
+
+      // Pobierz profil użytkownika
       const { data: profile } = await supabase
         .from('profiles')
         .select('role')
@@ -34,23 +37,42 @@ const AuthCallback = () => {
         .maybeSingle()
 
       if (!profile) {
-        // Brak profilu — onboarding
-        navigate('/onboarding')
+        // Trigger nie zdążył — nie powinno się zdarzyć, ale obsłuż
+        setError('Nie można załadować profilu. Spróbuj ponownie.')
+        setTimeout(() => navigate('/login'), 3000)
         return
       }
 
+      // Jeśli mamy pendingRole (Google OAuth z wyborem roli),
+      // zaktualizuj profil jeśli domyślny trigger wpisał złą rolę
+      const resolvedRole: 'musician' | 'venue' = pendingRole ?? profile.role
+
+      if (pendingRole && profile.role !== pendingRole) {
+        await supabase
+          .from('profiles')
+          .update({ role: pendingRole })
+          .eq('user_id', userId)
+        await supabase
+          .from('subscriptions')
+          .update({ plan: pendingRole })
+          .eq('user_id', userId)
+      }
+      if (pendingRole) {
+        localStorage.removeItem('gigmatch_pending_role')
+      }
+
       // Sprawdź czy ukończył onboarding (ma rozszerzony profil)
-      const extTable = profile.role === 'venue' ? 'venue_profiles' : 'musician_profiles'
+      const extTable = resolvedRole === 'venue' ? 'venue_profiles' : 'musician_profiles'
       const { data: extProfile } = await supabase
         .from(extTable)
         .select('user_id')
         .eq('user_id', userId)
         .maybeSingle()
 
-      if (!extProfile) {
-        navigate('/onboarding')
+      if (extProfile) {
+        navigate(resolvedRole === 'venue' ? '/venue' : '/musician')
       } else {
-        navigate(profile.role === 'venue' ? '/venue' : '/musician')
+        navigate('/onboarding')
       }
     }
 

@@ -40,16 +40,12 @@ const DAYS = [
   { value: 'nd', label: 'Nd' },
 ]
 
-const OCCASION_TYPES = [
-  { value: 'regularny_wieczor', label: 'Regularny wieczór' },
-  { value: 'event_specjalny', label: 'Event specjalny' },
-  { value: 'wesele', label: 'Wesele' },
-]
-
-const EXPECTATIONS_TYPES = [
-  { value: 'tlo_muzyczne', label: 'Tło muzyczne' },
-  { value: 'glowna_atrakcja', label: 'Główna atrakcja' },
-  { value: 'muzyka_taneczna', label: 'Muzyka taneczna' },
+const VENUE_TYPES = [
+  { value: 'bar', label: 'Bar' },
+  { value: 'klub', label: 'Klub' },
+  { value: 'restauracja', label: 'Restauracja' },
+  { value: 'hotel', label: 'Hotel' },
+  { value: 'inne', label: 'Inne' },
 ]
 
 function TagSelector({
@@ -106,9 +102,12 @@ export default function Onboarding() {
   const [bio, setBio] = useState('')
 
   // Venue fields
-  const [atmosphere, setAtmosphere] = useState('')
-  const [occasion, setOccasion] = useState('')
-  const [expectations, setExpectations] = useState('')
+  const [venueName, setVenueName] = useState('')
+  const [venueType, setVenueType] = useState('')
+  const [capacity, setCapacity] = useState('')
+  const [budgetPerGig, setBudgetPerGig] = useState('')
+  const [preferredGenres, setPreferredGenres] = useState<string[]>([])
+  const [eventDays, setEventDays] = useState<string[]>([])
 
   const handleLocationChange = (newLat: number, newLng: number) => {
     setLat(newLat)
@@ -124,12 +123,15 @@ export default function Onboarding() {
 
     supabase
       .from('profiles')
-      .select('role')
+      .select('role, name')
       .eq('user_id', user.id)
       .single()
       .then(({ data }) => {
         if (data?.role) {
           setRole(data.role as 'musician' | 'venue')
+          if (data.role === 'venue' && data.name) {
+            setVenueName(data.name)
+          }
           setStep(1)
         } else {
           navigate('/login')
@@ -163,20 +165,15 @@ export default function Onboarding() {
       }
       navigate('/musician')
     } else {
-      // Use profile name as venue_name fallback
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('name')
-        .eq('user_id', user.id)
-        .single()
-
       const { error } = await supabase.from('venue_profiles').upsert(
         {
           user_id: user.id,
-          venue_name: profileData?.name ?? '',
-          atmosphere: atmosphere || null,
-          occasion: occasion || null,
-          expectations: expectations || null,
+          venue_name: venueName || '',
+          venue_type: venueType || null,
+          capacity: capacity ? parseInt(capacity, 10) : null,
+          budget_per_gig: budgetPerGig ? parseFloat(budgetPerGig) : null,
+          preferred_genres: preferredGenres,
+          event_days: eventDays,
           lat: lat ?? null,
           lng: lng ?? null,
         },
@@ -223,12 +220,12 @@ export default function Onboarding() {
           </div>
 
           <h1 className="font-display text-2xl font-bold text-foreground mb-1">
-            {role === 'musician' ? 'Twój profil muzyczny' : 'Charakter miejsca'}
+            {role === 'musician' ? 'Twój profil muzyczny' : 'Profil lokalu'}
           </h1>
           <p className="text-muted-foreground text-sm mb-6">
             {role === 'musician'
-              ? 'AI dopasuje Cię do najlepszych gigów na podstawie Twojego profilu.'
-              : 'AI dobierze muzyków idealnie pasujących do atmosfery Twojego lokalu.'}
+              ? 'System dopasuje Cię do najlepszych gigów na podstawie Twojego profilu.'
+              : 'System dobierze muzyków idealnie pasujących do Twojego miejsca.'}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -340,55 +337,105 @@ export default function Onboarding() {
                   animate={{ opacity: 1, x: 0 }}
                   className="space-y-4"
                 >
+                  {/* Nazwa lokalu */}
+                  <div className="space-y-2">
+                    <Label htmlFor="venueName">Nazwa lokalu</Label>
+                    <Input
+                      id="venueName"
+                      placeholder="np. Jazz Club Harlem"
+                      value={venueName}
+                      onChange={(e) => setVenueName(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  {/* Typ lokalu */}
+                  <div className="space-y-2">
+                    <Label>Typ lokalu</Label>
+                    <Select value={venueType} onValueChange={setVenueType}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Wybierz typ" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {VENUE_TYPES.map((t) => (
+                          <SelectItem key={t.value} value={t.value}>
+                            {t.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Pojemność */}
+                  <div className="space-y-2">
+                    <Label htmlFor="capacity">Pojemność (liczba gości)</Label>
+                    <Input
+                      id="capacity"
+                      type="number"
+                      placeholder="np. 80"
+                      min={1}
+                      value={capacity}
+                      onChange={(e) => setCapacity(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Budżet na gig */}
+                  <div className="space-y-2">
+                    <Label htmlFor="budget">Budżet na gig (PLN)</Label>
+                    <Input
+                      id="budget"
+                      type="number"
+                      placeholder="np. 800"
+                      min={0}
+                      value={budgetPerGig}
+                      onChange={(e) => setBudgetPerGig(e.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground">Orientacyjny budżet za jeden wieczór.</p>
+                  </div>
+
+                  {/* Preferowane gatunki */}
+                  <div className="space-y-2">
+                    <Label>Preferowane gatunki muzyczne</Label>
+                    <TagSelector options={GENRES} selected={preferredGenres} onChange={setPreferredGenres} />
+                    {preferredGenres.length === 0 && (
+                      <p className="text-xs text-muted-foreground">Wybierz gatunki pasujące do Twojego miejsca.</p>
+                    )}
+                  </div>
+
+                  {/* Dni eventów */}
+                  <div className="space-y-2">
+                    <Label>Dni eventów muzycznych</Label>
+                    <div className="flex gap-2">
+                      {DAYS.map((day) => (
+                        <button
+                          key={day.value}
+                          type="button"
+                          onClick={() =>
+                            setEventDays((prev) =>
+                              prev.includes(day.value)
+                                ? prev.filter((d) => d !== day.value)
+                                : [...prev, day.value]
+                            )
+                          }
+                          className={`flex-1 py-2 rounded-lg text-xs font-medium border transition-all ${
+                            eventDays.includes(day.value)
+                              ? 'bg-gradient-to-r from-indigo-500 to-violet-500 text-white border-indigo-500'
+                              : 'bg-background text-muted-foreground border-border hover:border-indigo-300'
+                          }`}
+                        >
+                          {day.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
                   {/* Lokalizacja */}
                   <div className="space-y-2">
                     <Label>Lokalizacja lokalu</Label>
                     <LocationDetector
                       onChange={handleLocationChange}
-                      hint="Potrzebne do wyświetlenia lokalu na mapie dla muzyków."
+                      hint="Stały adres lokalu — pokazywany muzykom na mapie."
                     />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="atmosphere">Atmosfera miejsca</Label>
-                    <Input
-                      id="atmosphere"
-                      placeholder="np. spokojna restauracja fine dining, energiczny klub nocny"
-                      value={atmosphere}
-                      onChange={(e) => setAtmosphere(e.target.value)}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Typ okazji</Label>
-                    <Select value={occasion} onValueChange={setOccasion}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Wybierz typ okazji" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {OCCASION_TYPES.map((t) => (
-                          <SelectItem key={t.value} value={t.value}>
-                            {t.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Oczekiwania wobec muzyki</Label>
-                    <Select value={expectations} onValueChange={setExpectations}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Wybierz oczekiwania" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {EXPECTATIONS_TYPES.map((t) => (
-                          <SelectItem key={t.value} value={t.value}>
-                            {t.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
                   </div>
                 </motion.div>
               )}
