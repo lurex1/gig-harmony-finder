@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import heroIllustration from "@/assets/hero-illustration.jpg";
 
 const HeroSection = () => {
+  const { t } = useTranslation();
   return (
     <section
       className="py-12 md:py-24"
@@ -19,12 +21,11 @@ const HeroSection = () => {
               transition={{ duration: 0.5 }}
             >
               <h1 className="font-display text-4xl md:text-6xl font-bold leading-[1.05] text-foreground mb-6">
-                Połącz muzykę z miejscem
+                {t('hero.title')}
               </h1>
 
               <p className="text-muted-foreground text-lg mb-10 leading-relaxed">
-                Platforma AI która łączy muzyków z lokalami.{" "}
-                Wypełnij profil, AI dopasuje — czatuj i umawiaj gigi.
+                {t('hero.subtitle')}
               </p>
 
               <div className="flex flex-wrap gap-3">
@@ -33,13 +34,13 @@ const HeroSection = () => {
                   className="px-7 py-3 rounded-full font-semibold text-white text-sm transition-opacity hover:opacity-90"
                   style={{ background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)" }}
                 >
-                  Jestem muzykiem
+                  {t('hero.musicianCta')}
                 </Link>
                 <Link
                   to="/register"
                   className="px-7 py-3 rounded-full font-semibold text-sm border-2 border-indigo-500 text-indigo-600 bg-white transition-colors hover:bg-indigo-50"
                 >
-                  Mam lokal
+                  {t('hero.venueCta')}
                 </Link>
               </div>
             </motion.div>

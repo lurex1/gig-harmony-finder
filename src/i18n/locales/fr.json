@@ -23,7 +23,11 @@
     "bandForEvent": "Groupe pour événement",
     "bandForEventDesc": "Cover band, trio jazz, acoustique",
     "iAmMusician": "Je suis musicien",
-    "iAmMusicianDesc": "Je cherche des concerts près de chez moi"
+    "iAmMusicianDesc": "Je cherche des concerts près de chez moi",
+    "musicianCta": "Je suis musicien",
+    "venueCta": "J'ai un lieu",
+    "title": "Connecter la musique à un lieu",
+    "subtitle": "Plateforme IA qui connecte musiciens et lieux. Remplissez votre profil, l'IA fait le match — chattez et réservez des concerts."
   },
   "features": {
     "title": "Tout ce dont vous avez besoin",

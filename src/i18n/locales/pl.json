@@ -23,7 +23,11 @@
     "bandForEvent": "Zespół na event",
     "bandForEventDesc": "Cover band, jazz trio, akustyk",
     "iAmMusician": "Jestem muzykiem",
-    "iAmMusicianDesc": "Szukam gigów w mojej okolicy"
+    "iAmMusicianDesc": "Szukam gigów w mojej okolicy",
+    "musicianCta": "Jestem muzykiem",
+    "venueCta": "Mam lokal",
+    "title": "Połącz muzykę z miejscem",
+    "subtitle": "Platforma AI która łączy muzyków z lokalami. Wypełnij profil, AI dopasuje — czatuj i umawiaj gigi."
   },
   "features": {
     "title": "Wszystko czego potrzebujesz",

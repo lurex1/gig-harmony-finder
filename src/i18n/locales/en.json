@@ -23,7 +23,11 @@
     "bandForEvent": "Band for an event",
     "bandForEventDesc": "Cover band, jazz trio, acoustic",
     "iAmMusician": "I'm a musician",
-    "iAmMusicianDesc": "Looking for gigs in my area"
+    "iAmMusicianDesc": "Looking for gigs in my area",
+    "musicianCta": "I'm a musician",
+    "venueCta": "I have a venue",
+    "title": "Connect music with a place",
+    "subtitle": "AI platform that connects musicians with venues. Fill in your profile, AI matches — chat and book gigs."
   },
   "features": {
     "title": "Everything you need",

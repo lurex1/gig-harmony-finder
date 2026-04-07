@@ -23,7 +23,11 @@
     "bandForEvent": "Band für Event",
     "bandForEventDesc": "Coverband, Jazz-Trio, Akustik",
     "iAmMusician": "Ich bin Musiker",
-    "iAmMusicianDesc": "Suche Gigs in meiner Nähe"
+    "iAmMusicianDesc": "Suche Gigs in meiner Nähe",
+    "musicianCta": "Ich bin Musiker",
+    "venueCta": "Ich habe ein Lokal",
+    "title": "Musik mit einem Ort verbinden",
+    "subtitle": "KI-Plattform, die Musiker mit Locations verbindet. Profil ausfüllen, KI matcht — chatten und Gigs buchen."
   },
   "features": {
     "title": "Alles was du brauchst",

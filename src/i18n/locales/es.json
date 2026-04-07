@@ -23,7 +23,11 @@
     "bandForEvent": "Banda para evento",
     "bandForEventDesc": "Cover band, trío de jazz, acústico",
     "iAmMusician": "Soy músico",
-    "iAmMusicianDesc": "Busco conciertos en mi zona"
+    "iAmMusicianDesc": "Busco conciertos en mi zona",
+    "musicianCta": "Soy músico",
+    "venueCta": "Tengo un local",
+    "title": "Conecta la música con un lugar",
+    "subtitle": "Plataforma de IA que conecta músicos con locales. Rellena tu perfil, la IA hace el match — chatea y reserva conciertos."
   },
   "features": {
     "title": "Todo lo que necesitas",
