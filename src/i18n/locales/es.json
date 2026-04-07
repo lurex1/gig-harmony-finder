@@ -54,8 +54,8 @@
     "step2Desc": "Los músicos activan su disponibilidad, los locales publican ofertas de conciertos.",
     "step3Title": "Matching IA",
     "step3Desc": "Nuestro motor IA clasifica las mejores coincidencias por distancia, género y estilo.",
-    "step4Title": "Reservar y tocar",
-    "step4Desc": "Acepta un concierto, organiza los detalles en el chat y sube al escenario."
+    "step4Title": "Chatear y reservar el gig",
+    "step4Desc": "Aprueba un match — se abre un chat en directo. ¡Acordad los detalles y tocad!"
   },
   "pricing": {
     "title": "Precios simples",

@@ -54,8 +54,8 @@
     "step2Desc": "Musiker aktivieren ihre Verfügbarkeit, Lokale veröffentlichen Gig-Angebote.",
     "step3Title": "KI-Matching",
     "step3Desc": "Unsere KI rankt die besten Matches nach Entfernung, Genre und Stil.",
-    "step4Title": "Buchen und spielen",
-    "step4Desc": "Akzeptiere einen Gig, kläre Details im Chat und geh auf die Bühne."
+    "step4Title": "Chatten und Gig buchen",
+    "step4Desc": "Bestätige einen Match — ein Live-Chat öffnet sich. Klärt die Details und spielt!"
   },
   "pricing": {
     "title": "Einfache Preise",
