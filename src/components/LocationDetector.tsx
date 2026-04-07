@@ -5,6 +5,8 @@
  * - Przycisk "Wykryj" używa GPS z maximumAge: 0 (dokładność ~5–10 m)
  * - Po wykryciu GPS: reverse geocoding → komunikat "Wykryto: [miasto]."
  * - Pinezka jest przeciągalna — onChange wywoływany przy każdej zmianie
+ * - Gdy brak VITE_GOOGLE_MAPS_API_KEY: mapa nie renderuje się,
+ *   GPS i koordynaty działają normalnie
  */
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -18,8 +20,8 @@ import { LocateFixed, Loader2, MapPin, AlertCircle, CheckCircle2, Info } from 'l
 import { Button } from '@/components/ui/button'
 import { reverseGeocode } from '@/lib/geocode'
 
-const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string
-const MAP_ID  = import.meta.env.VITE_GOOGLE_MAPS_MAP_ID  as string
+const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined
+const MAP_ID  = import.meta.env.VITE_GOOGLE_MAPS_MAP_ID  as string | undefined
 
 type Status = 'idle' | 'detecting' | 'detected' | 'error'
 
@@ -74,18 +76,58 @@ function DraggablePin({
   )
 }
 
+// ─── MapView — renderowane tylko gdy dostępny klucz API ───────────────────────
+function MapView({
+  position,
+  detectTrigger,
+  onDragEnd,
+}: {
+  position: Position
+  detectTrigger: number
+  onDragEnd: (pos: Position) => void
+}) {
+  return (
+    <APIProvider apiKey={API_KEY!}>
+      <AnimatePresence>
+        <motion.div
+          key="map"
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 300 }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
+          className="rounded-xl overflow-hidden border border-border shadow-sm"
+          style={{ height: 300 }}
+        >
+          <Map
+            mapId={MAP_ID}
+            defaultCenter={position}
+            defaultZoom={15}
+            gestureHandling="greedy"
+            disableDefaultUI={false}
+            style={{ width: '100%', height: '100%' }}
+          >
+            <MapController position={position} trigger={detectTrigger} />
+            <DraggablePin position={position} onDragEnd={onDragEnd} />
+          </Map>
+        </motion.div>
+      </AnimatePresence>
+    </APIProvider>
+  )
+}
+
 // ─── Public component ─────────────────────────────────────────────────────────
 interface LocationDetectorProps {
   /** Wywoływane przy każdej zmianie pozycji. city podawane tylko po wykryciu GPS. */
   onChange: (lat: number, lng: number, city?: string) => void
   /** Zapisana wcześniej pozycja (z DB) — mapa startuje od razu w tym miejscu */
   initialPosition?: { lat: number; lng: number } | null
-  /** Opcjonalny label nad przyciskiem */
+  /** Opcjonalny hint wyświetlany gdy pozycja nie jest jeszcze ustawiona */
   hint?: string
 }
 
 export function LocationDetector({ onChange, initialPosition, hint }: LocationDetectorProps) {
   const hasInitial = !!(initialPosition?.lat && initialPosition?.lng)
+  const hasMapKey  = !!API_KEY
 
   const [status,        setStatus]        = useState<Status>(hasInitial ? 'detected' : 'idle')
   const [position,      setPosition]      = useState<Position | null>(initialPosition ?? null)
@@ -147,95 +189,84 @@ export function LocationDetector({ onChange, initialPosition, hint }: LocationDe
   )
 
   return (
-    <APIProvider apiKey={API_KEY}>
-      <div className="space-y-3">
+    <div className="space-y-3">
 
-        {/* Przycisk + status */}
-        <div className="flex items-center gap-3 flex-wrap">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={detect}
-            disabled={status === 'detecting'}
-            className="gap-2 shrink-0"
-          >
-            {status === 'detecting' ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <LocateFixed className="w-4 h-4" />
-            )}
-            {status === 'detecting'
-              ? 'Wykrywanie…'
-              : hasInitial || status === 'detected'
-              ? 'Wykryj ponownie'
-              : 'Wykryj moją lokalizację'}
-          </Button>
-
-          {status === 'detected' && !gpsCity && (
-            <span className="flex items-center gap-1 text-xs text-green-600">
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              Lokalizacja ustawiona
-            </span>
+      {/* Przycisk + status */}
+      <div className="flex items-center gap-3 flex-wrap">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={detect}
+          disabled={status === 'detecting'}
+          className="gap-2 shrink-0"
+        >
+          {status === 'detecting' ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <LocateFixed className="w-4 h-4" />
           )}
-        </div>
+          {status === 'detecting'
+            ? 'Wykrywanie…'
+            : hasInitial || status === 'detected'
+            ? 'Wykryj ponownie'
+            : 'Wykryj moją lokalizację'}
+        </Button>
 
-        {/* Hint */}
-        {hint && status === 'idle' && !hasInitial && (
-          <p className="text-xs text-muted-foreground">{hint}</p>
-        )}
-
-        {/* Błąd */}
-        {status === 'error' && (
-          <div className="flex items-start gap-2 text-xs text-destructive">
-            <AlertCircle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-            <span>{errorMsg}</span>
-          </div>
-        )}
-
-        {/* Komunikat po GPS */}
-        {gpsCity && (
-          <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-indigo-50 dark:bg-indigo-950/30 text-xs text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
-            <Info className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-            <span>
-              Wykryto: <strong>{gpsCity}</strong>. Przesuń znacznik jeśli potrzeba i zapisz.
-            </span>
-          </div>
-        )}
-
-        {/* Mapa z pinezką */}
-        <AnimatePresence>
-          {status === 'detected' && position && (
-            <motion.div
-              key="map"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 300 }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="rounded-xl overflow-hidden border border-border shadow-sm"
-              style={{ height: 300 }}
-            >
-              <Map
-                mapId={MAP_ID}
-                defaultCenter={position}
-                defaultZoom={15}
-                gestureHandling="greedy"
-                disableDefaultUI={false}
-                style={{ width: '100%', height: '100%' }}
-              >
-                <MapController position={position} trigger={detectTrigger} />
-                <DraggablePin position={position} onDragEnd={handleDragEnd} />
-              </Map>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {status === 'detected' && (
-          <p className="text-xs text-muted-foreground">
-            Przeciągnij pinezkę, aby doprecyzować lokalizację.
-          </p>
+        {status === 'detected' && !gpsCity && (
+          <span className="flex items-center gap-1 text-xs text-green-600">
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            Lokalizacja ustawiona
+          </span>
         )}
       </div>
-    </APIProvider>
+
+      {/* Hint */}
+      {hint && status === 'idle' && !hasInitial && (
+        <p className="text-xs text-muted-foreground">{hint}</p>
+      )}
+
+      {/* Błąd */}
+      {status === 'error' && (
+        <div className="flex items-start gap-2 text-xs text-destructive">
+          <AlertCircle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+          <span>{errorMsg}</span>
+        </div>
+      )}
+
+      {/* Komunikat po GPS */}
+      {gpsCity && (
+        <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-indigo-50 dark:bg-indigo-950/30 text-xs text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+          <Info className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+          <span>
+            Wykryto: <strong>{gpsCity}</strong>.{hasMapKey ? ' Przesuń znacznik jeśli potrzeba i zapisz.' : ''}
+          </span>
+        </div>
+      )}
+
+      {/* Mapa — tylko gdy dostępny klucz API */}
+      {status === 'detected' && position && (
+        hasMapKey ? (
+          <>
+            <MapView
+              position={position}
+              detectTrigger={detectTrigger}
+              onDragEnd={handleDragEnd}
+            />
+            <p className="text-xs text-muted-foreground">
+              Przeciągnij pinezkę, aby doprecyzować lokalizację.
+            </p>
+          </>
+        ) : (
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-muted text-xs text-muted-foreground">
+            <MapPin className="w-3.5 h-3.5 shrink-0" />
+            <span>
+              Pozycja: {position.lat.toFixed(5)}, {position.lng.toFixed(5)}
+            </span>
+          </div>
+        )
+      )}
+
+    </div>
   )
 }

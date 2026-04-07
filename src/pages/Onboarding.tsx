@@ -455,7 +455,7 @@ export default function Onboarding() {
               ) : (
                 <ChevronRight className="w-4 h-4 mr-1" />
               )}
-              {submitting ? 'Zapisuję...' : 'Przejdź do dashboardu'}
+              {submitting ? 'Zapisuję...' : 'Zapisz i przejdź do dashboardu'}
             </Button>
           </form>
 
