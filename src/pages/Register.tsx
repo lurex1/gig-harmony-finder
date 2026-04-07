@@ -173,7 +173,7 @@ const Register = () => {
               </motion.button>
             </div>
           ) : (
-            {/* Google OAuth */}
+            <>
             <div className="space-y-3 mb-4">
               <button
                 type="button"
@@ -279,6 +279,7 @@ const Register = () => {
                 {role === "musician" ? t('register.trialInfoMusician') : t('register.trialInfoVenue')}
               </p>
             </motion.form>
+            </>
           )}
 
           <p className="text-sm text-muted-foreground text-center mt-6">
