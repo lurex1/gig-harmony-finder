@@ -153,6 +153,9 @@
     "cookies": "Cookies",
     "allRights": "© {{year}} GigMatch. Tous droits réservés."
   },
+  "beta": {
+    "notice": "Bêta active jusqu'au 1er juin 2026. Abonnement requis après cette date."
+  },
   "legal": {
     "backBtn": "Retour à l'accueil",
     "lastUpdated": "Dernière mise à jour : {{date}}",

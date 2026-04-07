@@ -241,6 +241,11 @@ export default function MusicianDashboard() {
         </div>
       </header>
 
+      {/* ── Beta notice ──────────────────────────────────────────────────── */}
+      <div className="bg-indigo-50 border-b border-indigo-100 px-4 py-1.5 text-center text-xs text-indigo-700">
+        {t('beta.notice')}
+      </div>
+
       {/* ── Mobile sidebar overlay ───────────────────────────────────────── */}
       <AnimatePresence>
         {sidebarOpen && (
