@@ -158,7 +158,7 @@ const Register = () => {
               >
                 <Guitar className="w-10 h-10 text-foreground mx-auto mb-3" />
                 <span className="font-display text-lg font-semibold text-foreground block">{t('register.musician')}</span>
-                <span className="text-xs text-muted-foreground mt-1 block">{t('register.musicianTrial')}</span>
+                <span className="text-xs text-muted-foreground mt-1 block">{t('register.betaNotice')}</span>
               </motion.button>
 
               <motion.button
@@ -169,7 +169,7 @@ const Register = () => {
               >
                 <Building2 className="w-10 h-10 text-foreground mx-auto mb-3" />
                 <span className="font-display text-lg font-semibold text-foreground block">{t('register.venue')}</span>
-                <span className="text-xs text-muted-foreground mt-1 block">{t('register.venueTrial')}</span>
+                <span className="text-xs text-muted-foreground mt-1 block">{t('register.betaNotice')}</span>
               </motion.button>
             </div>
           ) : (
