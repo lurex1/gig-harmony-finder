@@ -26,8 +26,8 @@
     "iAmMusicianDesc": "Looking for gigs in my area",
     "musicianCta": "I'm a musician",
     "venueCta": "I have a venue",
-    "title": "Connect music with a place",
-    "subtitle": "AI platform that connects musicians with venues. Fill in your profile, AI matches — chat and book gigs."
+    "title": "Find a gig. Find a musician.",
+    "subtitle": "For musicians looking for gigs. For venues looking to book live music. Free beta — join now."
   },
   "features": {
     "title": "Everything you need",
@@ -52,8 +52,8 @@
     "step1Desc": "Choose your role — musician or venue. 7-day trial, no credit card required.",
     "step2Title": "Fill in your profile",
     "step2Desc": "Add genres, instruments, venue atmosphere and set your location in one click.",
-    "step3Title": "AI matches you",
-    "step3Desc": "Claude AI analyses style, budget and atmosphere compatibility. You only see matches ≥ 50%.",
+    "step3Title": "Smart matching",
+    "step3Desc": "We analyse style, budget and location compatibility. You only see the best matches.",
     "step4Title": "Chat and book the gig",
     "step4Desc": "Approve a match — a real-time chat opens. Agree on details and play!",
     "featuresTitle": "Everything you need",

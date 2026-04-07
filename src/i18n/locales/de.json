@@ -26,8 +26,8 @@
     "iAmMusicianDesc": "Suche Gigs in meiner Nähe",
     "musicianCta": "Ich bin Musiker",
     "venueCta": "Ich habe ein Lokal",
-    "title": "Musik mit einem Ort verbinden",
-    "subtitle": "KI-Plattform, die Musiker mit Locations verbindet. Profil ausfüllen, KI matcht — chatten und Gigs buchen."
+    "title": "Finde einen Gig. Finde einen Musiker.",
+    "subtitle": "Für Musiker auf der Suche nach Auftritten. Für Lokale, die Live-Musik buchen möchten. Kostenlose Beta — jetzt mitmachen."
   },
   "features": {
     "title": "Alles was du brauchst",
@@ -52,8 +52,8 @@
     "step1Desc": "Registriere dich als Musiker oder Lokal. Füge deine Daten und Präferenzen hinzu.",
     "step2Title": "Verfügbarkeit aktivieren",
     "step2Desc": "Musiker aktivieren ihre Verfügbarkeit, Lokale veröffentlichen Gig-Angebote.",
-    "step3Title": "KI-Matching",
-    "step3Desc": "Unsere KI rankt die besten Matches nach Entfernung, Genre und Stil.",
+    "step3Title": "Matching",
+    "step3Desc": "Das System analysiert Stil, Budget und Standort. Du siehst nur die besten Übereinstimmungen.",
     "step4Title": "Chatten und Gig buchen",
     "step4Desc": "Bestätige einen Match — ein Live-Chat öffnet sich. Klärt die Details und spielt!"
   },

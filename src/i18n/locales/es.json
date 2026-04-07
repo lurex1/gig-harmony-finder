@@ -26,8 +26,8 @@
     "iAmMusicianDesc": "Busco conciertos en mi zona",
     "musicianCta": "Soy músico",
     "venueCta": "Tengo un local",
-    "title": "Conecta la música con un lugar",
-    "subtitle": "Plataforma de IA que conecta músicos con locales. Rellena tu perfil, la IA hace el match — chatea y reserva conciertos."
+    "title": "Encuentra un gig. Encuentra un músico.",
+    "subtitle": "Para músicos que buscan dónde tocar. Para locales que buscan música en directo. Beta gratuita — únete ahora."
   },
   "features": {
     "title": "Todo lo que necesitas",
@@ -52,8 +52,8 @@
     "step1Desc": "Regístrate como músico o local. Añade tus datos y preferencias.",
     "step2Title": "Activar disponibilidad",
     "step2Desc": "Los músicos activan su disponibilidad, los locales publican ofertas de conciertos.",
-    "step3Title": "Matching IA",
-    "step3Desc": "Nuestro motor IA clasifica las mejores coincidencias por distancia, género y estilo.",
+    "step3Title": "Matching",
+    "step3Desc": "El sistema analiza la compatibilidad de estilo, presupuesto y ubicación. Solo ves las mejores coincidencias.",
     "step4Title": "Chatear y reservar el gig",
     "step4Desc": "Aprueba un match — se abre un chat en directo. ¡Acordad los detalles y tocad!"
   },

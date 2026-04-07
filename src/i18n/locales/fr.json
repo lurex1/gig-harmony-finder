@@ -26,8 +26,8 @@
     "iAmMusicianDesc": "Je cherche des concerts près de chez moi",
     "musicianCta": "Je suis musicien",
     "venueCta": "J'ai un lieu",
-    "title": "Connecter la musique à un lieu",
-    "subtitle": "Plateforme IA qui connecte musiciens et lieux. Remplissez votre profil, l'IA fait le match — chattez et réservez des concerts."
+    "title": "Trouvez un gig. Trouvez un musicien.",
+    "subtitle": "Pour les musiciens qui cherchent des scènes. Pour les lieux qui cherchent à programmer de la musique live. Bêta gratuite — rejoignez-nous."
   },
   "features": {
     "title": "Tout ce dont vous avez besoin",
@@ -52,8 +52,8 @@
     "step1Desc": "Inscrivez-vous en tant que musicien ou lieu. Ajoutez vos informations et préférences.",
     "step2Title": "Activer la disponibilité",
     "step2Desc": "Les musiciens activent leur disponibilité, les lieux publient des offres de concerts.",
-    "step3Title": "Matching IA",
-    "step3Desc": "Notre moteur IA classe les meilleures correspondances par distance, genre et style.",
+    "step3Title": "Matching",
+    "step3Desc": "Le système analyse la compatibilité de style, budget et localisation. Vous ne voyez que les meilleures correspondances.",
     "step4Title": "Chatter et réserver le gig",
     "step4Desc": "Approuvez un match — un chat en direct s'ouvre. Mettez-vous d'accord et jouez !"
   },

@@ -26,8 +26,8 @@
     "iAmMusicianDesc": "Szukam gigów w mojej okolicy",
     "musicianCta": "Jestem muzykiem",
     "venueCta": "Mam lokal",
-    "title": "Połącz muzykę z miejscem",
-    "subtitle": "Platforma AI która łączy muzyków z lokalami. Wypełnij profil, AI dopasuje — czatuj i umawiaj gigi."
+    "title": "Znajdź gig. Znajdź muzyka.",
+    "subtitle": "Dla muzyków szukających miejsc do grania. Dla lokali szukających muzyków do bookingu. Darmowa beta — dołącz teraz."
   },
   "features": {
     "title": "Wszystko czego potrzebujesz",
@@ -52,8 +52,8 @@
     "step1Desc": "Wybierz rolę — muzyk lub lokal. 7 dni trial za darmo, bez karty kredytowej.",
     "step2Title": "Wypełnij profil",
     "step2Desc": "Podaj gatunki, instrumenty, atmosferę miejsca i ustaw lokalizację jednym kliknięciem.",
-    "step3Title": "AI dopasowuje",
-    "step3Desc": "Claude AI analizuje kompatybilność stylu, budżetu i atmosfery. Widzisz tylko dopasowania ≥ 50%.",
+    "step3Title": "Dopasowanie",
+    "step3Desc": "System analizuje zgodność stylu, budżetu i lokalizacji. Widzisz tylko najlepsze dopasowania.",
     "step4Title": "Czatuj i umawiaj gig",
     "step4Desc": "Zatwierdź propozycję — otwiera się czat na żywo. Ustalcie szczegóły i grajcie!",
     "featuresTitle": "Wszystko czego potrzebujesz",
