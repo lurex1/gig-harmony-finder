@@ -21,7 +21,7 @@ import { Button } from '@/components/ui/button'
 import { reverseGeocode } from '@/lib/geocode'
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined
-const MAP_ID  = import.meta.env.VITE_GOOGLE_MAPS_MAP_ID  as string | undefined
+const MAP_ID  = (import.meta.env.VITE_GOOGLE_MAPS_MAP_ID as string | undefined) || 'DEMO_MAP_ID'
 
 type Status = 'idle' | 'detecting' | 'detected' | 'error'
 
