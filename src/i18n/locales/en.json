@@ -187,7 +187,8 @@
     "bestMusicians": "Best musicians for",
     "interactiveMap": "Interactive map coming soon",
     "googleMaps": "Google Maps integration",
-    "sendOffer": "Send offer"
+    "sendOffer": "Send offer",
+    "anyGenre": "Any genre"
   },
   "musicianDashNew": {
     "proposals": "Matches",

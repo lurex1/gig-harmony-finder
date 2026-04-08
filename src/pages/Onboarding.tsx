@@ -17,6 +17,7 @@ import {
 import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/lib/supabase'
 import { LocationDetector } from '@/components/LocationDetector'
+import { useTranslation } from 'react-i18next'
 
 const GENRES = [
   'Jazz', 'Blues', 'Rock', 'Pop', 'Klasyczna', 'Folk', 'Country', 'R&B/Soul',
@@ -80,9 +81,12 @@ function TagSelector({
   )
 }
 
+const ANY_GENRE = 'any'
+
 export default function Onboarding() {
   const { user, loading: authLoading } = useAuth()
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const [role, setRole] = useState<'musician' | 'venue' | null>(null)
   const [step, setStep] = useState(0)
@@ -396,7 +400,46 @@ export default function Onboarding() {
                   {/* Preferowane gatunki */}
                   <div className="space-y-2">
                     <Label>Preferowane gatunki muzyczne</Label>
-                    <TagSelector options={GENRES} selected={preferredGenres} onChange={setPreferredGenres} />
+                    <div className="flex flex-wrap gap-2">
+                      {/* Dowolny gatunek */}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setPreferredGenres(prev =>
+                            prev.includes(ANY_GENRE) ? [] : [ANY_GENRE]
+                          )
+                        }
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                          preferredGenres.includes(ANY_GENRE)
+                            ? 'bg-gradient-to-r from-indigo-500 to-violet-500 text-white border-indigo-500'
+                            : 'bg-background text-muted-foreground border-border hover:border-indigo-300'
+                        }`}
+                      >
+                        {t('venueDash.anyGenre')}
+                      </button>
+                      {/* Konkretne gatunki */}
+                      {GENRES.map((genre) => (
+                        <button
+                          key={genre}
+                          type="button"
+                          onClick={() =>
+                            setPreferredGenres(prev => {
+                              const without = prev.filter(g => g !== ANY_GENRE)
+                              return without.includes(genre)
+                                ? without.filter(g => g !== genre)
+                                : [...without, genre]
+                            })
+                          }
+                          className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                            preferredGenres.includes(genre)
+                              ? 'bg-gradient-to-r from-indigo-500 to-violet-500 text-white border-indigo-500'
+                              : 'bg-background text-muted-foreground border-border hover:border-indigo-300'
+                          }`}
+                        >
+                          {genre}
+                        </button>
+                      ))}
+                    </div>
                     {preferredGenres.length === 0 && (
                       <p className="text-xs text-muted-foreground">Wybierz gatunki pasujące do Twojego miejsca.</p>
                     )}
