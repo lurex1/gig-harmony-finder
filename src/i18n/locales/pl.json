@@ -192,7 +192,7 @@
   "musicianDashNew": {
     "proposals": "Dopasowania",
     "proposalsTitle": "Dopasowania",
-    "proposalsDesc": "Lokale dopasowane przez AI (próg 50%). Zaznacz kilka i zatwierdź, aby otworzyć czat.",
+    "proposalsDesc": "Lokale dopasowane (próg 50%). Zaznacz kilka i zatwierdź, aby otworzyć czat.",
     "chat": "Wiadomości",
     "messages": "Wiadomości",
     "messagesTitle": "Wiadomości",
@@ -285,7 +285,7 @@
   },
   "venueDashNew": {
     "findMusiciansTitle": "Dopasowania",
-    "findMusiciansDesc": "Muzycy dopasowani przez AI (próg: 50%). Zaznacz i zatwierdź, aby otworzyć czat.",
+    "findMusiciansDesc": "Muzycy dopasowani (próg: 50%). Zaznacz i zatwierdź, aby otworzyć czat.",
     "messagesTitle": "Wiadomości",
     "messagesDesc": "Rozmowy z muzykami. Nowe czaty otwierasz z listy Dopasowań.",
     "findMusiciansNav": "Dopasowania",
