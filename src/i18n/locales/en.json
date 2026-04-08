@@ -191,7 +191,7 @@
   },
   "musicianDashNew": {
     "proposals": "Matches",
-    "proposalsTitle": "AI Matches",
+    "proposalsTitle": "Matches",
     "proposalsDesc": "AI-matched venues (50% threshold). Select a few and approve to open chat.",
     "chat": "Messages",
     "messages": "Messages",
@@ -284,7 +284,7 @@
     "locationHint": "Your location is visible on the map to venues when you are available."
   },
   "venueDashNew": {
-    "findMusiciansTitle": "AI Matches",
+    "findMusiciansTitle": "Matches",
     "findMusiciansDesc": "AI-matched musicians (50% threshold). Select and approve to open chat.",
     "messagesTitle": "Messages",
     "messagesDesc": "Conversations with musicians. Open new chats from the Matches list.",
