@@ -32,17 +32,27 @@ const Login = () => {
       return;
     }
 
-    // Fetch profile to redirect to the right dashboard
     const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("user_id", user.id)
-        .single();
+    if (!user) { setIsLoading(false); return; }
 
-      navigate(profile?.role === "venue" ? "/venue" : "/musician");
-    }
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    const role = profile?.role as 'musician' | 'venue' | undefined;
+    if (!role) { navigate('/onboarding'); return; }
+
+    // Check if extended profile exists — skip onboarding for returning users
+    const extTable = role === 'venue' ? 'venue_profiles' : 'musician_profiles';
+    const { data: extProfile } = await supabase
+      .from(extTable)
+      .select('user_id')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    navigate(extProfile ? (role === 'venue' ? '/venue' : '/musician') : '/onboarding');
   };
 
   return (
