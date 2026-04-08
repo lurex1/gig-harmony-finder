@@ -61,6 +61,12 @@ const AuthCallback = () => {
         localStorage.removeItem('gigmatch_pending_role')
       }
 
+      // Sync role to user_metadata so ProtectedRoute (useAuth) can read it.
+      // Google OAuth users don't have role in user_metadata by default.
+      if (session.user.user_metadata?.role !== resolvedRole) {
+        await supabase.auth.updateUser({ data: { role: resolvedRole } })
+      }
+
       // Sprawdź czy ukończył onboarding (ma rozszerzony profil)
       const extTable = resolvedRole === 'venue' ? 'venue_profiles' : 'musician_profiles'
       const { data: extProfile } = await supabase
