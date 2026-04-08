@@ -202,7 +202,7 @@
     "gigsDesc": "Otwarte gigi na mapie. Kliknij marker i naciśnij Aplikuj, aby wysłać zgłoszenie.",
     "profile": "Mój profil",
     "profileTitle": "Mój profil",
-    "profileDesc": "Uzupełnij profil — AI lepiej dopasuje Cię do lokali.",
+    "profileDesc": "Uzupełnij profil — lepiej dopasujemy Cię do lokali.",
     "musicianBadge": "Muzyk",
     "signOut": "Wyloguj się"
   },
@@ -317,7 +317,7 @@
     "gigPublished": "Gig opublikowany!",
     "gigPublishedDesc": "Muzycy zobaczą go na mapie.",
     "profileTitle": "Profil lokalu",
-    "profileDesc": "Uzupełnij profil aby AI lepiej dopasowywało muzyków.",
+    "profileDesc": "Uzupełnij profil aby lepiej dopasowywać muzyków.",
     "editPreferences": "Edytuj preferencje",
     "error": "Błąd",
     "venueBadge": "Lokal"

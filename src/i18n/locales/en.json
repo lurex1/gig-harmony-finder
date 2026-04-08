@@ -202,7 +202,7 @@
     "gigsDesc": "Open gigs on the map. Click a marker and press Apply to send your application.",
     "profile": "My profile",
     "profileTitle": "My profile",
-    "profileDesc": "Complete your profile — AI will match you to venues more accurately.",
+    "profileDesc": "Complete your profile — we'll match you to venues more accurately.",
     "musicianBadge": "Musician",
     "signOut": "Sign out"
   },
@@ -317,7 +317,7 @@
     "gigPublished": "Gig published!",
     "gigPublishedDesc": "Musicians will see it on the map.",
     "profileTitle": "Venue profile",
-    "profileDesc": "Complete your profile so AI can better match musicians.",
+    "profileDesc": "Complete your profile to better match musicians.",
     "editPreferences": "Edit preferences",
     "error": "Error",
     "venueBadge": "Venue"
