@@ -17,6 +17,16 @@ const Footer = () => {
             <Link to="/privacy-policy" className="hover:text-foreground transition-colors">{t('footer.privacyPolicy')}</Link>
             <Link to="/terms" className="hover:text-foreground transition-colors">{t('footer.terms')}</Link>
             <Link to="/cookies" className="hover:text-foreground transition-colors">{t('footer.cookies')}</Link>
+            {import.meta.env.VITE_TALLY_FEEDBACK_URL && (
+              <a
+                href={import.meta.env.VITE_TALLY_FEEDBACK_URL as string}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-foreground transition-colors"
+              >
+                {t('footer.feedback', { defaultValue: 'Daj feedback' })}
+              </a>
+            )}
           </div>
           <p className="text-sm text-muted-foreground">
             {t('footer.allRights', { year: new Date().getFullYear() })}

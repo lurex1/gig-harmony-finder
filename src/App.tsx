@@ -18,6 +18,8 @@ import Cookies from "./pages/Cookies";
 import Onboarding from "./pages/Onboarding";
 import AuthCallback from "./pages/AuthCallback";
 import NotFound from "./pages/NotFound";
+import PageTracking from "@/components/PageTracking";
+import FeedbackButton from "@/components/FeedbackButton";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +30,8 @@ const App = () => (
       <Sonner />
       <AuthProvider>
         <BrowserRouter>
+          <PageTracking />
+          <FeedbackButton />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
