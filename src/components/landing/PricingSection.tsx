@@ -3,26 +3,10 @@ import { Check, Music, Building2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
-const musicianFeatures = [
-  "Profil z audio i video",
-  "Mapa gigów w okolicy",
-  "Aplikowanie na gigi",
-  "Ranking AI dopasowań",
-  "Wiadomości z lokalami",
-  "Kalendarz dostępności",
-];
-
-const venueFeatures = [
-  "Profil lokalu z galerią",
-  "Publikowanie ogłoszeń",
-  "Przeglądanie muzyków",
-  "Ranking AI dopasowań",
-  "Wiadomości z muzykami",
-  "Zarządzanie aplikacjami",
-];
-
 const PricingSection = () => {
   const { t } = useTranslation();
+  const musicianFeatures = t('pricing.musicianFeatures', { returnObjects: true }) as string[];
+  const venueFeatures = t('pricing.venueFeatures', { returnObjects: true }) as string[];
 
   return (
     <section
@@ -66,7 +50,7 @@ const PricingSection = () => {
                    style={{ background: "linear-gradient(135deg, #6366f1, #8b5cf6)" }}>
                 <Music className="w-4 h-4 text-white" />
               </div>
-              <h3 className="font-display text-2xl font-bold text-foreground">Muzyk</h3>
+              <h3 className="font-display text-2xl font-bold text-foreground">{t('pricing.musician')}</h3>
             </div>
 
             <div className="mb-1">
@@ -75,7 +59,7 @@ const PricingSection = () => {
             </div>
             <p className="text-xs font-medium text-indigo-500 mb-4">{t('pricing.trialInfo')}</p>
 
-            <p className="text-sm text-muted-foreground mb-6">Dla solistów, zespołów i DJ-ów</p>
+            <p className="text-sm text-muted-foreground mb-6">{t('pricing.musicianDesc')}</p>
 
             <ul className="space-y-3 mb-8">
               {musicianFeatures.map((feature) => (

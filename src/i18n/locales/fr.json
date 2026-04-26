@@ -55,7 +55,17 @@
     "step3Title": "Matching",
     "step3Desc": "Le système analyse la compatibilité de style, budget et localisation. Vous ne voyez que les meilleures correspondances.",
     "step4Title": "Chatter et réserver le gig",
-    "step4Desc": "Approuvez un match — un chat en direct s'ouvre. Mettez-vous d'accord et jouez !"
+    "step4Desc": "Approuvez un match — un chat en direct s'ouvre. Mettez-vous d'accord et jouez !",
+    "featuresTitle": "Tout ce dont vous avez besoin",
+    "featuresSubtitle": "Un produit au lieu de tableurs, d'appels téléphoniques et d'annonces.",
+    "feat1Title": "Carte en direct",
+    "feat1Desc": "Musiciens et concerts visibles sur Google Maps dans votre région.",
+    "feat2Title": "Correspondance intelligente",
+    "feat2Desc": "Nous analysons la compatibilité de style, de budget et d'atmosphère. Les incompatibilités majeures sont exclues automatiquement.",
+    "feat3Title": "Chat en temps réel",
+    "feat3Desc": "Chaque proposition approuvée ouvre un chat direct. Conversations parallèles avec plusieurs parties.",
+    "feat4Title": "Tarifs simples",
+    "feat4Desc": "7 jours gratuits. Musicien : 4,99 $/mois. Lieu : 8,99 $/mois. Annulez quand vous voulez."
   },
   "pricing": {
     "title": "Tarifs simples",

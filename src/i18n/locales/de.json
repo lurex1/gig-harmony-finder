@@ -55,7 +55,17 @@
     "step3Title": "Matching",
     "step3Desc": "Das System analysiert Stil, Budget und Standort. Du siehst nur die besten Übereinstimmungen.",
     "step4Title": "Chatten und Gig buchen",
-    "step4Desc": "Bestätige einen Match — ein Live-Chat öffnet sich. Klärt die Details und spielt!"
+    "step4Desc": "Bestätige einen Match — ein Live-Chat öffnet sich. Klärt die Details und spielt!",
+    "featuresTitle": "Alles was du brauchst",
+    "featuresSubtitle": "Ein Produkt statt Tabellen, Telefonanrufen und Anzeigen.",
+    "feat1Title": "Live-Karte",
+    "feat1Desc": "Musiker und Gigs auf Google Maps in deiner Nähe sichtbar.",
+    "feat2Title": "Intelligentes Matching",
+    "feat2Desc": "Wir analysieren Stil, Budget und Atmosphärekompatibilität. Große Unstimmigkeiten werden automatisch ausgeschlossen.",
+    "feat3Title": "Echtzeit-Chat",
+    "feat3Desc": "Jede bestätigte Anfrage öffnet einen direkten Chat. Parallele Gespräche mit mehreren Parteien.",
+    "feat4Title": "Einfache Preise",
+    "feat4Desc": "7 Tage kostenlos. Musiker: $4,99/Mo. Lokal: $8,99/Mo. Jederzeit kündbar."
   },
   "pricing": {
     "title": "Einfache Preise",

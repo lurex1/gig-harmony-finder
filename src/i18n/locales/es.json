@@ -55,7 +55,17 @@
     "step3Title": "Matching",
     "step3Desc": "El sistema analiza la compatibilidad de estilo, presupuesto y ubicación. Solo ves las mejores coincidencias.",
     "step4Title": "Chatear y reservar el gig",
-    "step4Desc": "Aprueba un match — se abre un chat en directo. ¡Acordad los detalles y tocad!"
+    "step4Desc": "Aprueba un match — se abre un chat en directo. ¡Acordad los detalles y tocad!",
+    "featuresTitle": "Todo lo que necesitas",
+    "featuresSubtitle": "Un producto en lugar de hojas de cálculo, llamadas y anuncios.",
+    "feat1Title": "Mapa en vivo",
+    "feat1Desc": "Músicos y conciertos visibles en Google Maps en tu zona.",
+    "feat2Title": "Coincidencia inteligente",
+    "feat2Desc": "Analizamos la compatibilidad de estilo, presupuesto y atmósfera. Las grandes incompatibilidades se excluyen automáticamente.",
+    "feat3Title": "Chat en tiempo real",
+    "feat3Desc": "Cada propuesta aprobada abre un chat directo. Conversaciones paralelas con múltiples partes.",
+    "feat4Title": "Precios simples",
+    "feat4Desc": "7 días gratis. Músico: $4,99/mes. Local: $8,99/mes. Cancela cuando quieras."
   },
   "pricing": {
     "title": "Precios simples",
