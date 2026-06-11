@@ -133,7 +133,7 @@
     "venue": "Venue",
     "musicianTrial": "7 days free, then $1.99/mo",
     "venueTrial": "7 days free, then $3.99/mo",
-    "betaNotice": "Free beta until June 1, 2026!",
+    "betaNotice": "Free beta until July 30, 2026!",
     "changeRole": "← Change role",
     "artistName": "Artist/band name",
     "venueName": "Venue name",
@@ -332,7 +332,7 @@
   "faq": {
     "title": "Frequently asked questions",
     "q1": "Is GigMatch free?",
-    "a1": "Yes, during the beta period (until June 1, 2026) the app is completely free. After beta: Musician $4.99/mo, Venue $8.99/mo.",
+    "a1": "Yes, during the beta period (until July 30, 2026) the app is completely free. After beta: Musician $4.99/mo, Venue $8.99/mo.",
     "q2": "How does matching work?",
     "a2": "You fill in your profile — genre, location, budget. The system compares your preferences with the other side and shows only the best-fitting profiles.",
     "q3": "I'm a musician — what can I do in the app?",
@@ -345,7 +345,7 @@
     "a6": "GigMatch works everywhere — the app is available in Polish, English, German, Spanish and French."
   },
   "beta": {
-    "notice": "Beta active until June 1, 2026. Subscription required after that."
+    "notice": "Beta active until July 30, 2026. Subscription required after that."
   },
   "legal": {
     "backBtn": "Back to home",
