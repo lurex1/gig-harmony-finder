@@ -14,33 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      gig_applications: {
-        Row: {
-          created_at: string
-          gig_id: string
-          id: string
-          message: string | null
-          musician_id: string
-          status: Database["public"]["Enums"]["application_status"]
-        }
-        Insert: {
-          created_at?: string
-          gig_id: string
-          id?: string
-          message?: string | null
-          musician_id: string
-          status?: Database["public"]["Enums"]["application_status"]
-        }
-        Update: {
-          created_at?: string
-          gig_id?: string
-          id?: string
-          message?: string | null
-          musician_id?: string
-          status?: Database["public"]["Enums"]["application_status"]
-        }
-        Relationships: []
-      }
       gigs: {
         Row: {
           budget: number | null
@@ -98,63 +71,6 @@ export type Database = {
         }
         Relationships: []
       }
-      musician_profiles: {
-        Row: {
-          available: boolean
-          avatar_url: string | null
-          bio: string | null
-          created_at: string
-          genres: string[]
-          hourly_rate: number | null
-          id: string
-          instruments: string[]
-          lat: number | null
-          lng: number | null
-          location: string | null
-          performance_type: string | null
-          repertoire: string | null
-          stage_name: string | null
-          style: string | null
-          user_id: string
-        }
-        Insert: {
-          available?: boolean
-          avatar_url?: string | null
-          bio?: string | null
-          created_at?: string
-          genres?: string[]
-          hourly_rate?: number | null
-          id?: string
-          instruments?: string[]
-          lat?: number | null
-          lng?: number | null
-          location?: string | null
-          performance_type?: string | null
-          repertoire?: string | null
-          stage_name?: string | null
-          style?: string | null
-          user_id: string
-        }
-        Update: {
-          available?: boolean
-          avatar_url?: string | null
-          bio?: string | null
-          created_at?: string
-          genres?: string[]
-          hourly_rate?: number | null
-          id?: string
-          instruments?: string[]
-          lat?: number | null
-          lng?: number | null
-          location?: string | null
-          performance_type?: string | null
-          repertoire?: string | null
-          stage_name?: string | null
-          style?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
       profiles: {
         Row: {
           bio: string | null
@@ -179,57 +95,6 @@ export type Database = {
           name?: string
           role?: Database["public"]["Enums"]["user_role"]
           user_id?: string
-        }
-        Relationships: []
-      }
-      venue_profiles: {
-        Row: {
-          atmosphere: string | null
-          avatar_url: string | null
-          bio: string | null
-          capacity: number | null
-          created_at: string
-          expectations: string | null
-          id: string
-          lat: number | null
-          lng: number | null
-          location: string | null
-          occasion: string | null
-          user_id: string
-          venue_name: string
-          venue_type: string | null
-        }
-        Insert: {
-          atmosphere?: string | null
-          avatar_url?: string | null
-          bio?: string | null
-          capacity?: number | null
-          created_at?: string
-          expectations?: string | null
-          id?: string
-          lat?: number | null
-          lng?: number | null
-          location?: string | null
-          occasion?: string | null
-          user_id: string
-          venue_name: string
-          venue_type?: string | null
-        }
-        Update: {
-          atmosphere?: string | null
-          avatar_url?: string | null
-          bio?: string | null
-          capacity?: number | null
-          created_at?: string
-          expectations?: string | null
-          id?: string
-          lat?: number | null
-          lng?: number | null
-          location?: string | null
-          occasion?: string | null
-          user_id?: string
-          venue_name?: string
-          venue_type?: string | null
         }
         Relationships: []
       }
@@ -274,7 +139,6 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      application_status: "pending" | "accepted" | "rejected"
       gig_status: "open" | "filled" | "cancelled" | "completed"
       subscription_plan: "musician" | "venue"
       subscription_status: "trial" | "active" | "cancelled"
@@ -406,7 +270,6 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      application_status: ["pending", "accepted", "rejected"],
       gig_status: ["open", "filled", "cancelled", "completed"],
       subscription_plan: ["musician", "venue"],
       subscription_status: ["trial", "active", "cancelled"],
